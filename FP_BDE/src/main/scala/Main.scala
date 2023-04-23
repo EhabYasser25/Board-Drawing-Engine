@@ -6,26 +6,24 @@ import scala.swing.event.EditDone
 import AbstractGameEngine._
 
 object Main {
+  System.setProperty("sun.java2d.uiScale", "1.0")
 //    def top = new MainFrame {
-//      val originalX = new ImageIcon("C:/Users/moham/Desktop/Board-Drawing-Engine/icons set/x.png").getImage
-//      val scaledX = originalX.getScaledInstance(50, 50, Image.SCALE_SMOOTH)
-//      val originalO = new ImageIcon("C:/Users/moham/Desktop/Board-Drawing-Engine/icons set/o.png").getImage
-//      val scaledO = originalO.getScaledInstance(50, 50, Image.SCALE_SMOOTH)
+//      val X = new ImageIcon("C:/Users/moham/Desktop/Board-Drawing-Engine/icons set/x.png").getImage
+//      val O = new ImageIcon("C:/Users/moham/Desktop/Board-Drawing-Engine/icons set/o.png").getImage
 //      title = "Tic Tac Toe"
 //
 //      val textField = new TextField(20)
 //      textField.listenTo(textField)
 //      val label = new Label {
-//        preferredSize = new Dimension(100, 100)
-//        text = "hello"
+//        preferredSize = new Dimension(300, 300)
 //      }
 //      textField.reactions += {
 //        case EditDone(textField) =>
 //          val text = textField.text.toLowerCase() // get the text from the text field
 //          if(text.equals("x")){
-//            label.icon = new ImageIcon(scaledX)
+//            label.icon = new ImageIcon(X)
 //          }else if(text.equals("o")){
-//            label.icon = new ImageIcon(scaledO)
+//            label.icon = new ImageIcon(O)
 //          }else{}
 //          textField.text = ""
 //        case _ =>
@@ -38,8 +36,8 @@ object Main {
 //      pack() // resize the window to fit the components
 //    }
   def main(args: Array[String]): Unit = {
-    val TicTacToeBoard: Board = Board(Vector(Vector(0,0,0), Vector(0,0,0), Vector(0,0,0)))
-    playGame(TicTacToeDrawer.Drawer, TicTacToeController.Controller,
-      Board(Vector(Vector(0,0,0), Vector(0,0,0), Vector(0,0,0))))
+    val TicTacToeBoard = Array.ofDim[Char](3, 3)
+    playGame("TicTacToe", TicTacToeController.Controller,
+      TicTacToeBoard)
   }
 }
