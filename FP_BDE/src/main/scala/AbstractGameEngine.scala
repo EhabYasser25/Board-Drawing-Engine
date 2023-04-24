@@ -1,31 +1,27 @@
-import scala.swing.MainFrame
 
-object AbstractGameEngine extends App {
-  var currentBoard: Array[Array[Char]] = null
+// Define a game engine
+object AbstractGameEngine {
+  // Track the current player (1 or 2)
   var currentPlayer = 1
-  def playGame(game: String,
 
-               controller: (Array[Array[Char]], String) => Option[Array[Array[Char]]],
+  // Define a function type for the game controller
+  var Controller: (Array[Array[Char]], String) => Array[Array[Char]] = null
+
+  // Set the controller and display the initial board using the drawer function
+  def playGame(drawer: Array[Array[Char]] => Unit,
+               controller: (Array[Array[Char]], String) => Array[Array[Char]],
                board: Array[Array[Char]]): Unit = {
+    Controller = controller
+    drawer(board)
+  }
 
-    currentBoard = board
-    while (true) {
-      // drawer(currentBoard, currentPlayer)
-      game match {
-        case "TicTacToe" => TicTacToeDrawer.main(Array.empty)
-        case _ =>
-      } // Draw the board
-      print(s"Player $currentPlayer, enter your move: ")
-      val input = scala.io.StdIn.readLine()
+  // Call the controller with player input and return the updated board
+  def Control(board: Array[Array[Char]], input: String): Array[Array[Char]] = {
+    Controller(board, input)
+  }
 
-      val updatedBoard = controller(currentBoard, input) // Validate and update move
-      updatedBoard match {
-        case Some(newBoard) =>
-          currentBoard = newBoard
-          currentPlayer = (currentPlayer % 2) + 1 // Alternate players
-        case None =>
-          println("Invalid move, please try again.")
-      }
-    }
+  // Switch to the next player's turn
+  def alternateTurns(): Unit = {
+    currentPlayer = if (currentPlayer == 1) 2 else 1
   }
 }
