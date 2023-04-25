@@ -8,8 +8,8 @@ import scala.swing.event._
 
 object TicTacToeDrawer extends SimpleSwingApplication {
   // Icon set
-  val xIcon = new ImageIcon("C:/Users/moham/Desktop/Board-Drawing-Engine/icons set/x.png")
-  val oIcon = new ImageIcon("C:/Users/moham/Desktop/Board-Drawing-Engine/icons set/o.png")
+  val xIcon = new ImageIcon("../icons set/x.png")
+  val oIcon = new ImageIcon("../icons set/o.png")
 
   // Board array
   var board = Array.ofDim[Char](3, 3)
