@@ -5,7 +5,7 @@ object AbstractGameEngine {
   var currentPlayer = 1
 
   // Define a function type for the game controller
-  var Controller: (Array[Array[Char]], String) => Array[Array[Char]] = null
+  var Controller: (Array[Array[Char]], String) => Array[Array[Char]] = _
 
   // Set the controller and display the initial board using the drawer function
   def playGame(drawer: Array[Array[Char]] => Unit,

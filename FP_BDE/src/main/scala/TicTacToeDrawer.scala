@@ -1,4 +1,4 @@
-import TicTacToeController.{isValid}
+import TicTacToeController.isValid
 import AbstractGameEngine._
 import java.awt.Color
 import java.awt.Font
@@ -8,24 +8,24 @@ import scala.swing.event._
 
 object TicTacToeDrawer extends SimpleSwingApplication {
   // Icon set
-  val xIcon = new ImageIcon("../icons set/x.png")
-  val oIcon = new ImageIcon("../icons set/o.png")
+  private val xIcon = new ImageIcon("../icons set/x.png")
+  private val oIcon = new ImageIcon("../icons set/o.png")
 
   // Board array
-  var board = Array.ofDim[Char](3, 3)
+  var board: Array[Array[Char]] = Array.ofDim[Char](3, 3)
 
   // User input
   var input = ""
 
   // The GUI components
-  val statusLabel = new Label(s"Player $currentPlayer's turn")  // shows current turn
-  val boardLabels = Array.ofDim[Label](3, 3)  // to update the board and show players' moves
-  def top = new MainFrame {
+  private val statusLabel = new Label(s"Player $currentPlayer's turn")  // shows current turn
+  private val boardLabels = Array.ofDim[Label](3, 3)  // to update the board and show players' moves
+  def top: MainFrame = new MainFrame {
     title = "Tic Tac Toe"
     updateStatusLabel("Valid")
     contents = new BorderPanel {
       // The game board panel
-      val boardPanel = new GridPanel(3, 3) {
+      val boardPanel: GridPanel = new GridPanel(3, 3) {
         for (i <- 0 until 3; j <- 0 until 3) {
           val label = new Label("")
           label.border = BorderFactory.createMatteBorder(1, 1, 0, 0, Color.BLACK)
@@ -36,7 +36,7 @@ object TicTacToeDrawer extends SimpleSwingApplication {
         }
       }
       // The horizontal letters panel
-      val lettersPanel = new GridPanel(1, 3) {
+      val lettersPanel: GridPanel = new GridPanel(1, 3) {
         for (i <- 0 until 3) {
           val label = new Label(
             i match {
@@ -95,7 +95,7 @@ object TicTacToeDrawer extends SimpleSwingApplication {
       val exitButton = new FlowPanel(FlowPanel.Alignment.Center)(backToMain)
 
       // The vertical numbers panel
-      val numbersPanel = new GridPanel(3, 1) {
+      val numbersPanel: GridPanel = new GridPanel(3, 1) {
         for (i <- 1 until 4) {
           val label = new Label(s"$i")
           label.preferredSize = new Dimension(10, 100)
@@ -108,7 +108,7 @@ object TicTacToeDrawer extends SimpleSwingApplication {
       statusPanel.border = BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK)
 
       // The input panel containing both input text area and reset button
-      val inputPanel = new BoxPanel(Orientation.Vertical) {
+      val inputPanel: BoxPanel = new BoxPanel(Orientation.Vertical) {
         contents += takeInput
         contents += flowButton
         contents += exitButton
@@ -118,7 +118,7 @@ object TicTacToeDrawer extends SimpleSwingApplication {
       val leftPanel = new FlowPanel(FlowPanel.Alignment.Center)(inputPanel, numbersPanel)
 
       // The center panel containing both the board panel and the letters panel
-      val centerPanel = new BoxPanel(Orientation.Vertical) {
+      val centerPanel: BoxPanel = new BoxPanel(Orientation.Vertical) {
         contents += boardPanel
         contents += lettersPanel
       }

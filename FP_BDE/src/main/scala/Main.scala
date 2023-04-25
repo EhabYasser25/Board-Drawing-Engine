@@ -9,19 +9,19 @@ object Main extends SimpleSwingApplication {
   System.setProperty("sun.java2d.uiScale", "1.0")
 
   // Define functions to get the drawer, controller, and board for a selected game
-  def getDrawer(game: String): Array[Array[Char]] => Unit = {
+  private def getDrawer(game: String): Array[Array[Char]] => Unit = {
     game match {
       case "Tic Tac Toe" => TicTacToeDrawer.Drawer
       case _ => TicTacToeDrawer.Drawer
     }
   }
-  def getController(game: String): (Array[Array[Char]], String) => Array[Array[Char]] = {
+  private def getController(game: String): (Array[Array[Char]], String) => Array[Array[Char]] = {
     game match {
       case "Tic Tac Toe" => TicTacToeController.Controller
       case _ => TicTacToeController.Controller
     }
   }
-  def getBoard(game: String): Array[Array[Char]] = {
+  private def getBoard(game: String): Array[Array[Char]] = {
     game match {
       case "Tic Tac Toe" => Array.ofDim[Char](3, 3)
       case _ => new Array[Array[Char]](0)
@@ -29,17 +29,17 @@ object Main extends SimpleSwingApplication {
   }
 
   // Initialize variables for game selection
-  val buttons = Array.ofDim[Button](6, 1)
-  var selectedGame = ""
+  private val buttons = Array.ofDim[Button](6, 1)
+  private var selectedGame = ""
   var board: Array[Array[Char]] = new Array[Array[Char]](0)
 
   // Define the main window
-  def top = new MainFrame {
+  def top: MainFrame = new MainFrame {
     title = "Board Games"
 
     // Create a panel containing buttons for game selection
     contents = new BorderPanel {
-      val boardPanel = new GridPanel(6, 1) {
+      val boardPanel: GridPanel = new GridPanel(6, 1) {
         for (i <- 0 until 6) {
           val button = new Button("")
           button.focusable = false
