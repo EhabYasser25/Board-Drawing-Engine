@@ -10,14 +10,14 @@ object Main extends SimpleSwingApplication {
 
   // Define functions to get the drawer, controller, and board for a selected game
 
-  private def getDrawer(game: String): Array[Array[Char]] => Unit = {
+  private def getDrawer(game: String): Array[Array[Char]] => FlowPanel = {
     game match {
       case "Tic Tac Toe" => TicTacToeDrawer.Drawer
       case _ => TicTacToeDrawer.Drawer
     }
   }
 
-  private def getController(game: String): (Array[Array[Char]], String) => Array[Array[Char]] = {
+  private def getController(game: String): (Array[Array[Char]], String, Int) => Array[Array[Char]] = {
     game match {
       case "Tic Tac Toe" => TicTacToeController.Controller
       case _ => TicTacToeController.Controller
