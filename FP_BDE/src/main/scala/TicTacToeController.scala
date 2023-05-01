@@ -2,18 +2,19 @@ import AbstractGameEngine._
 
 // Define the Tic Tac Toe game controller
 object TicTacToeController {
-  // Initialize a variable for checking the validity of player input
-  var isValid = 0
 
   // Define the controller function for Tic Tac Toe
-  def Controller(board: Array[Array[Char]], input: String): Array[Array[Char]] = {
+  def Controller(board: Array[Array[Char]], input: String, currentPlayer: Int): Array[Array[Char]] = {
+
+    // Initialize a variable for checking the validity of player input
+    board(19)(19) = 0
+
     input match {
       // Handle the "reset" input by clearing the board and resetting the player
       case "reset" =>
         for(i <- 0 until 3 ; j <- 0 until 3) {
           board(i)(j) = '\u0000'
         }
-        currentPlayer = 1
         board
 
       // Handle empty input by returning the current board
@@ -30,7 +31,7 @@ object TicTacToeController {
         // Check that both row and column parts exist
         (rowLetter, colLetter) match {
           case (Some(row), Some(col)) =>
-          case _ => isValid = 1; return board
+          case _ => board(19)(19) = 1; return board
         }
 
         // Convert the column letter to an integer index
@@ -38,7 +39,7 @@ object TicTacToeController {
           case "a" => 0
           case "b" => 1
           case "c" => 2
-          case _ => isValid = 1; return board
+          case _ => board(19)(19) = 1; return board
         }
 
         // Convert the row number to an integer index
@@ -46,7 +47,7 @@ object TicTacToeController {
 
         // Check that the row index is within bounds
         if (row < 0 || row > 2) {
-          isValid = 1
+          board(19)(19) = 1
           return board
         }
 
@@ -57,14 +58,13 @@ object TicTacToeController {
             currentPlayer match {
               case 1 => board(row)(col) = 'X'
               case 2 => board(row)(col) = 'O'
-              case _ => isValid = 1;
+              case _ => board(19)(19) = 1;
             }
-            alternateTurns()
-            isValid = 0
+            board(19)(19) = 0
 
           // If the cell is not empty, mark the move as invalid
           case _ =>
-            isValid = 1
+            board(19)(19) = 1
         }
         board
     }

@@ -9,29 +9,22 @@ object Main extends SimpleSwingApplication {
   System.setProperty("sun.java2d.uiScale", "1.0")
 
   // Define functions to get the drawer, controller, and board for a selected game
-  def getDrawer(game: String): Array[Array[Char]] => Unit = {
+  def getDrawer(game: String): Array[Array[Char]] => FlowPanel = {
     game match {
       case "Tic Tac Toe" => TicTacToeDrawer.Drawer
       case _ => TicTacToeDrawer.Drawer
     }
   }
-  def getController(game: String): (Array[Array[Char]], String) => Array[Array[Char]] = {
+  def getController(game: String): (Array[Array[Char]], String, Int) => Array[Array[Char]] = {
     game match {
       case "Tic Tac Toe" => TicTacToeController.Controller
       case _ => TicTacToeController.Controller
     }
   }
-  def getBoard(game: String): Array[Array[Char]] = {
-    game match {
-      case "Tic Tac Toe" => Array.ofDim[Char](3, 3)
-      case _ => new Array[Array[Char]](0)
-    }
-  }
 
   // Initialize variables for game selection
-  val buttons = Array.ofDim[Button](6, 1)
-  var selectedGame = ""
-  var board: Array[Array[Char]] = new Array[Array[Char]](0)
+  private val buttons = Array.ofDim[Button](6, 1)
+  private var selectedGame = ""
 
   // Define the main window
   def top = new MainFrame {
@@ -62,10 +55,9 @@ object Main extends SimpleSwingApplication {
                 case _ => selectedGame = ""
               }
               close()
-              board = getBoard(selectedGame)
               val drawer = getDrawer(selectedGame)
               val controller = getController(selectedGame)
-              playGame(drawer, controller, board)
+              playGame(drawer, controller)
           }
           buttons(i)(0) = button
           contents += button
