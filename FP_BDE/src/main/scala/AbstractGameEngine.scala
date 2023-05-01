@@ -107,7 +107,6 @@ object AbstractGameEngine extends SimpleSwingApplication{
     }
 
     // Adjusting game window
-    pack()
     centerOnScreen()
     open()
   }
