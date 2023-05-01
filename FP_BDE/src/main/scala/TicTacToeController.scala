@@ -25,7 +25,7 @@ object TicTacToeController {
       case _ =>
         // Split the input into row and column parts
         val parts = input.split(" ").map(_.trim)
-        val rowLetter = parts.lift(0)
+        val rowLetter = parts.headOption
         val colLetter = parts.lift(1)
 
         // Check that both row and column parts exist
