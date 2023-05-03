@@ -14,11 +14,11 @@ class Connect4GameEngine extends mod1.AbstractGameEngine {
         // Display the board with the game specific logic
         // returns void
     }
-    controller(game_board, user_input){
+    controller(game_board, user_input, player1Turn){
         console.log("Connect Four Game Engine - Controller: Validating Input ...")
         // Validate the input & update
         game_board.push(user_input.split("").reverse().join(""));
-        return game_board;
+        return [game_board, true];
     }
 }
 module.exports = {Connect4GameEngine}
