@@ -14,12 +14,19 @@ class AbstractGameEngine {
     }
 
     async run(){
-        let game_board = null;
+        let game_board;
+        let inputStateIndicator = false;
+        let player1Turn = true;
+        this.drawer(game_board = this.init_board());
         while(true){
-            this.drawer(game_board = this.controller(
-                (game_board == null ? this.init_board() : game_board),
-                await this.scanInput()
-            ));
+            console.log(`Player ${player1Turn ? 1 : 2} - Turn`);
+            [game_board, inputStateIndicator] = this.controller(game_board, await this.scanInput(), player1Turn);
+            while(!inputStateIndicator) {
+                console.log('Invalid Move, Try Again');
+                [game_board, inputStateIndicator] = this.controller(game_board, await this.scanInput(), player1Turn);
+            }
+            this.drawer(game_board);
+            [inputStateIndicator, player1Turn] = [false, !player1Turn]
             console.log('----------------- Separator -----------------');
         }
     }
@@ -37,12 +44,12 @@ class AbstractGameEngine {
         throw new Error("Abstract method must be implemented.");
     }
 
-    controller(game_board, user_input){
+    controller(game_board, user_input, player1Turn){
         // Implement the game logic to validate the user input
         // ...
         // Apply the modifications - in case the input was validated - to the game board
         // ...
-        // return game_board
+        // return [game_board, InputStateIndicator]
         throw new Error("Abstract method must be implemented.");
     }
 }
