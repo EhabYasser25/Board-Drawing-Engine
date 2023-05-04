@@ -20,6 +20,7 @@ const gameNumber = readlineSync.question(
 
 // 2- depending on the input, create the gameInstance
 let gameInstance;
+let two_players_game = true;
 switch (gameNumber){
     case '1':
         gameInstance = new mod1.ChessGameEngine();
@@ -29,9 +30,11 @@ switch (gameNumber){
         break;
     case '3':
         gameInstance = new mod3.SudokuGameEngine();
+        two_players_game = false;
         break;
     case '4':
         gameInstance = new mod4.EightQueensGameEngine();
+        two_players_game = false;
         break;
     case '5':
         gameInstance = new mod5.CheckersGameEngine();
@@ -44,4 +47,4 @@ switch (gameNumber){
 }
 
 // 3- gameInstance.run()
-gameInstance.run()
+gameInstance.run(two_players_game)
