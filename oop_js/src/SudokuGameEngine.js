@@ -79,6 +79,7 @@ class SudokuGameEngine extends mod1.AbstractGameEngine {
 
         //handle shorter or longer input
         if(user_input.length !== 4)
+            return false
 
         //get data from input string
         const row = parseInt(user_input[0]) - 1
