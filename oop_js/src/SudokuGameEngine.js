@@ -62,9 +62,7 @@ class SudokuGameEngine extends mod1.AbstractGameEngine {
         //get data from input string
         const row = parseInt(user_input[0]) - 1
         const col = user_input[1].charCodeAt(0) - 'a'.charCodeAt(0)
-        const space = user_input[2]
         const num = Number(user_input[3])
-        const len = user_input.length
 
         //update the board if input is valid
         if(valid)
