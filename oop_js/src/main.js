@@ -11,7 +11,7 @@ const readlineSync = require('readline-sync');
 const gameNumber = readlineSync.question(
     'Enter the choice number:\n' +
     '1. Chess Game\n' +
-    '2. Connect Four Game\n' +
+    '2. Connect 4 Game\n' +
     '3. Sudoku\n' +
     '4. 8 Queens\n' +
     '5. Checkers\n' +
