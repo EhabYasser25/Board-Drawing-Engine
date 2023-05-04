@@ -13,13 +13,14 @@ class AbstractGameEngine {
         // return game_board
     }
 
-    async run(){
+    async run(two_players_game){
         let game_board;
         let inputStateIndicator = false;
         let player1Turn = true;
         this.drawer(game_board = this.init_board());
         while(true){
-            console.log(`Player ${player1Turn ? 1 : 2} - Turn`);
+            if(two_players_game)
+                console.log(`Player ${player1Turn ? 1 : 2} - Turn`);
             [game_board, inputStateIndicator] = this.controller(game_board, await this.scanInput(), player1Turn);
             while(!inputStateIndicator) {
                 console.log('Invalid Move, Try Again');
