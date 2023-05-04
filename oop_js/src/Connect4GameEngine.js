@@ -22,7 +22,6 @@ class Connect4GameEngine extends mod1.AbstractGameEngine {
         // returns void
         const blueColor = '\x1b[44m';
         const resetColor = '\x1b[0m';
-        console.clear()
         console.log(`${blueColor} 1  2  3  4  5  6  7 ${resetColor}`);
         for(let i = 0 ; i < 6 ; i++){
             let row = blueColor;

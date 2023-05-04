@@ -10,14 +10,14 @@ class EightQueensGameEngine extends mod1.AbstractGameEngine {
         for (let i = 0; i < 9; i++) {
             board[i] = [];
             for (let j = 0; j < 9; j++) {
-                if (i == 0) {
-                    board[i][j] = (j == 0) ? '  ' : ' ' + String.fromCharCode('a'.charCodeAt(0) + j - 1) + ' ';
-                } else if (j == 0 && i > 0) {
+                if (i === 0) {
+                    board[i][j] = (j === 0) ? '  ' : ' ' + String.fromCharCode('a'.charCodeAt(0) + j - 1) + ' ';
+                } else if (j === 0 && i > 0) {
                     board[i][j] = i;
                 } else if ((i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)) {
-                    board[i][j] = (j == 1) ? ' 🟧 ' : '🟧 '
+                    board[i][j] = (j === 1) ? ' 🟧 ' : '🟧 '
                 } else {
-                    board[i][j] = (j == 1) ? ' ⬜ ' : '⬜ '
+                    board[i][j] = (j === 1) ? ' ⬜ ' : '⬜ '
                 }
             }
         }
@@ -28,6 +28,7 @@ class EightQueensGameEngine extends mod1.AbstractGameEngine {
     one_player() {
         return true
     }
+
     drawer(game_board) {
         console.clear()
         const white = '\x1b[30m';
@@ -36,7 +37,7 @@ class EightQueensGameEngine extends mod1.AbstractGameEngine {
             let row = white
             for (let j = 0; j < 9; j++) {
                 if (game_board[i][j] === '♕') {
-                    row += (j == 1) ? ' ' : ''
+                    row += (j === 1) ? ' ' : ''
                     row += game_board[i][j] + '  '
                     continue
                 }
