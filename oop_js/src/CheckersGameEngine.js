@@ -15,7 +15,7 @@ class CheckersGameEngine extends mod1.AbstractGameEngine {
                     else if(i > 4) board[i][j] = '⚪';
                     else board[i][j] = '🟨';
                 }
-                else board[i][j] = '  ';
+                else board[i][j] = '🟥';
             }
         }
         return board;
@@ -33,7 +33,7 @@ class CheckersGameEngine extends mod1.AbstractGameEngine {
             }
             console.log(row);
         }
-        console.log('  ' + colLabels.join('  '));
+        console.log('   ' + colLabels.join('  '));
     }
 
     controller(game_board, user_input, player1Turn) {
@@ -61,7 +61,9 @@ class CheckersGameEngine extends mod1.AbstractGameEngine {
                     || Math.abs(from_col - to_col) == 2 && game_board[mid_row][mid_col] == '🟨'
                     || Math.abs(from_col - to_col) > 2
                     || from_row == to_row
-                    || from_col == to_col);
+                    || from_col == to_col
+                    || game_board[from_row][from_col] == '⚪' && from_row < to_row
+                    || game_board[from_row][from_col] == '⚫' && from_row > to_row);
         if(!valid) return [game_board, valid];
         else {
             game_board[to_row][to_col] = game_board[from_row][from_col];
