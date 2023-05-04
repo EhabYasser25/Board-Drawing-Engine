@@ -51,6 +51,20 @@ class EightQueensGameEngine extends mod1.AbstractGameEngine {
     controller(game_board, user_input, player1Turn) {
         let row = Number(user_input[0])
         let col = Number(user_input[1].charCodeAt(0) - 'a'.charCodeAt(0)) + 1
+
+        if (row < 1 || col < 1 || row > 9 || col > 9) {
+            return [game_board, false]
+        }
+
+        if (game_board[row][col] === '♕') {
+            if (col === 1) {
+                (game_board[row][col + 1] === '🟧 ') ? game_board[row][col] = ' ⬜ ': game_board[row][col] = ' 🟧 '
+            } else {
+                (game_board[row][col - 1] === '🟧 ') ? game_board[row][col] = '⬜ ': game_board[row][col] = '🟧 '
+            }
+            return [game_board, true]
+        }
+
         for (let i = 0; i < game_board.length; i++) {
             if (game_board[row][i] === '♕' && i !== col) {
                 return [game_board, false]
