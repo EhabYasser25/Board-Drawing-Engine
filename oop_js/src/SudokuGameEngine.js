@@ -7,16 +7,16 @@ class SudokuGameEngine extends mod1.AbstractGameEngine {
 
     init_board() {
         return [
-            [5, 3, 0, 0, 7, 0, 0, 0, 0],
-            [6, 0, 0, 1, 9, 5, 0, 0, 0],
-            [0, 9, 8, 0, 0, 0, 0, 6, 0],
-            [8, 0, 0, 0, 6, 0, 0, 0, 3],
-            [4, 0, 0, 8, 0, 3, 0, 0, 1],
-            [7, 0, 0, 0, 2, 0, 0, 0, 6],
-            [0, 6, 0, 0, 0, 0, 2, 8, 0],
-            [0, 0, 0, 4, 1, 9, 0, 0, 5],
-            [0, 0, 0, 0, 8, 0, 0, 7, 9],
-        ];
+            ['5', '3', '0', '0', '7', '0', '0', '0', '0'],
+            ['6', '0', '0', '1', '9', '5', '0', '0', '0'],
+            ['0', '9', '8', '0', '0', '0', '0', '6', '0'],
+            ['8', '0', '0', '0', '6', '0', '0', '0', '3'],
+            ['4', '0', '0', '8', '0', '3', '0', '0', '1'],
+            ['7', '0', '0', '0', '2', '0', '0', '0', '6'],
+            ['0', '6', '0', '0', '0', '0', '2', '8', '0'],
+            ['0', '0', '0', '4', '1', '9', '0', '0', '5'],
+            ['0', '0', '0', '0', '8', '0', '0', '7', '9'],
+        ]
     }
 
     drawer(game_board){
@@ -37,7 +37,7 @@ class SudokuGameEngine extends mod1.AbstractGameEngine {
         for (let i = 0; i < 9; i++) {
             let row = `${boldVerticalLine} `
             for (let j = 0; j < 9; j++) {
-                const value = game_board[i][j] === 0 ? ' ' : game_board[i][j]
+                const value = Number(game_board[i][j]) === 0 ? ' ' : game_board[i][j]
                 row += `${value} `
                 if ((j + 1) % 3 === 0)
                     row += `${boldVerticalLine} `
@@ -59,15 +59,12 @@ class SudokuGameEngine extends mod1.AbstractGameEngine {
         //validate input
         let valid = this.validateInput(game_board, user_input)
 
-
-
         //update the board if input is valid
         if(valid) {
             //get data from input string
             const row = parseInt(user_input[0]) - 1
             const col = user_input[1].charCodeAt(0) - 'a'.charCodeAt(0)
-            const num = Number(user_input[3])
-            game_board[row][col] = num
+            game_board[row][col] = user_input.length === 4 ? Number(user_input[3]) : 0
         }
 
         //return the results
@@ -76,6 +73,15 @@ class SudokuGameEngine extends mod1.AbstractGameEngine {
     }
 
     validateInput(game_board, user_input) {
+
+        //to store true if the current operation is removing element
+        let removeElement = false
+
+        //handle removing element
+        if(user_input.length === 2) {
+            user_input += ' 0'
+            removeElement = true
+        }
 
         //handle shorter or longer input
         if(user_input.length !== 4)
@@ -88,28 +94,43 @@ class SudokuGameEngine extends mod1.AbstractGameEngine {
         const num = Number(user_input[3])
 
         //check boundaries
-        if (row < 0 || row >= 9 || col < 0 || col >= 9 || num <= 0 || num > 9)
+        if (row < 0 || row >= 9 || col < 0 || col >= 9 || num < 0 || num > 9)
             return  false
 
         //check on the in-between space
         if(space !== ' ')
             return false
 
+        //handle removing element
+        if(removeElement) {
+
+            //check if it is initial element
+            if(typeof game_board[row][col] === 'string')
+                return false
+
+            //check in full cell
+            if(Number(game_board[row][col]) === 0)
+                return false
+
+            //return true if element is not initial and the cell is full
+            return true
+        }
+
         //check empty cell
-        if (game_board[row][col] !== 0)
+        if (Number(game_board[row][col]) !== 0)
             return  false
 
         //check on non-repetition of the num in its row or column
         for(let i = 0; i < 9; i++)
-            if(game_board[i][col] === num || game_board[row][i] === num)
+            if(Number(game_board[i][col]) === num || Number(game_board[row][i]) === num)
                 return false
 
         //check on non-repetition of the num in its square
-        let r = (row / 3) * 3
-        let c = (col / 3) * 3
+        let r = Math.floor(row / 3) * 3
+        let c = Math.floor(col / 3) * 3
         for(let i = r; i < r+3; i++)
             for(let j = c; j < c+3; j++)
-                if(game_board[i][j] === num)
+                if(Number(game_board[i][j]) === num)
                     return false
 
         //return true if passed all check
