@@ -59,14 +59,9 @@ class SudokuGameEngine extends mod1.AbstractGameEngine {
         //validate input
         let valid = this.validateInput(game_board, user_input)
 
-        //get data from input string
-        const row = parseInt(user_input[0]) - 1
-        const col = user_input[1].charCodeAt(0) - 'a'.charCodeAt(0)
-        const num = Number(user_input[3])
-
         //update the board if input is valid
         if(valid)
-            game_board[row][col] = num
+            game_board[user_input[0]][user_input[1]] = user_input[2]
 
         //return the results
         return [game_board, valid]
