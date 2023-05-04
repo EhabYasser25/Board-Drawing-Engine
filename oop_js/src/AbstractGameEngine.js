@@ -26,6 +26,7 @@ class AbstractGameEngine {
                 console.log('Invalid Move, Try Again');
                 [game_board, inputStateIndicator] = this.controller(game_board, await this.scanInput(), player1Turn);
             }
+            console.clear()
             this.drawer(game_board);
             [inputStateIndicator, player1Turn] = [false, !player1Turn]
             console.log('----------------- Separator -----------------');

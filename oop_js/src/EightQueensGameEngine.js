@@ -30,7 +30,6 @@ class EightQueensGameEngine extends mod1.AbstractGameEngine {
     }
 
     drawer(game_board) {
-        console.clear()
         const white = '\x1b[30m';
         const reset = '\x1b[0m';
         for (let i = 0; i < 9; i++) {
