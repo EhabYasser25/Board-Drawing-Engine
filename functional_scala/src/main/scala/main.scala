@@ -24,4 +24,5 @@ def main(): Unit = {
       checkers_initializer, true);
     case "6" => AbstractGameEngine(ticTacToe_controller, ticTacToe_drawer,
       ticTacToe_initializer, true);
+    case _ =>
 }
