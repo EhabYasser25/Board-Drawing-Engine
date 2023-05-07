@@ -6,6 +6,7 @@ def AbstractGameEngine(
                         initializer: () => Array[Array[String]],
                         twoPlayersGame: Boolean
                       ): Unit = {
+  drawer(initializer());
   play(initializer(), controller, drawer, twoPlayersGame, true)
 }
 
