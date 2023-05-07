@@ -1,9 +1,9 @@
 import scala.annotation._
 
 def AbstractGameEngine(
-                        controller: (Array[Array[Char]], String, Boolean) => (Array[Array[Char]], Boolean),
-                        drawer:  Array[Array[Char]] => Unit,
-                        initializer: () => Array[Array[Char]],
+                        controller: (Array[Array[String]], String, Boolean) => (Array[Array[String]], Boolean),
+                        drawer:  Array[Array[String]] => Unit,
+                        initializer: () => Array[Array[String]],
                         twoPlayersGame: Boolean
                       ): Unit = {
   play(initializer(), controller, drawer, twoPlayersGame, true)
@@ -11,9 +11,9 @@ def AbstractGameEngine(
 
 @tailrec
 private def play(
-                  board: Array[Array[Char]],
-                 controller: (Array[Array[Char]], String, Boolean) => (Array[Array[Char]], Boolean),
-                 drawer:  Array[Array[Char]] => Unit,
+                  board: Array[Array[String]],
+                 controller: (Array[Array[String]], String, Boolean) => (Array[Array[String]], Boolean),
+                 drawer:  Array[Array[String]] => Unit,
                  twoPlayersGame: Boolean,
                  player1Turn: Boolean
                 ): Unit = {
