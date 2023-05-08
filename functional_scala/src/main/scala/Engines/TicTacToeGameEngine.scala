@@ -46,5 +46,5 @@ def ticTacToe_drawer(game_board: Array[Array[String]]): Unit = {
 }
 
 def ticTacToe_initializer(): Array[Array[String]] = {
-  Array.fill[String](3,3)("🟩");
+  Array.fill[String](3,3)("🟩")
 }

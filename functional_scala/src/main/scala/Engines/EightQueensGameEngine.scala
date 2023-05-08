@@ -56,7 +56,8 @@ def eightQueens_drawer(game_board: Array[Array[String]]): Unit = {
   val white = "\u001B[30m"
   val reset = "\u001B[0m"
 
-  game_board.zipWithIndex.foreach { case (row, i) =>
+  game_board
+  .foreach( row =>
     val displayRow = row.zipWithIndex.foldLeft(white) { case (acc, (cell, j)) =>
       if (cell == "♕") {
         acc + (if (j == 1) " " else "") + cell + "  "
@@ -65,7 +66,7 @@ def eightQueens_drawer(game_board: Array[Array[String]]): Unit = {
       }
     } + reset
     println(displayRow)
-  }
+  )
 
 }
 
