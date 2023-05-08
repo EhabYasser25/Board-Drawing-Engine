@@ -51,7 +51,7 @@ class CheckersGameEngine extends mod1.AbstractGameEngine {
                     || from_col < 0 || from_col > 7
                     || to_row < 0 || to_row > 7
                     || to_col < 0 || to_col > 7
-                    || game_board[from_row][from_col] == '  '
+                    || game_board[from_row][from_col] == '🟥'
                     || game_board[from_row][from_col] == '🟨'
                     || game_board[to_row][to_col] != '🟨'
                     || game_board[from_row][from_col] == '⚪' && !player1Turn
