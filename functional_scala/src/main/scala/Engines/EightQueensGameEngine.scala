@@ -8,9 +8,7 @@ def eightQueens_controller(game_board: Array[Array[String]], input: String, play
   def isValidMove: Boolean = {
     if row >= 1 && row <= 8 && col >= 1 && col <= 8 then {
       def isQueenPresentInRowOrColumn: Boolean = {
-        val rowContainsQueen = game_board(row).contains("♕")
-        val colContainsQueen = game_board.exists(row => row(col) == "♕")
-        rowContainsQueen || colContainsQueen
+        game_board(row).contains("♕") || game_board.exists(row => row(col) == "♕")
       }
 
       def isQueenPresentInDiagonals: Boolean = {
