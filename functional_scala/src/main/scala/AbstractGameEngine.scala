@@ -12,13 +12,13 @@ def AbstractGameEngine(
 
 @tailrec
 def play(
-                  board: Array[Array[String]],
-                  controller: (Array[Array[String]], String, Boolean) => (Array[Array[String]], Boolean),
-                  drawer:  Array[Array[String]] => Unit,
-                  twoPlayersGame: Boolean,
-                  player1Turn: Boolean
-                ): Unit = {
-  if (twoPlayersGame) println(f"Player ${if (player1Turn) 1 else 2} - Turn")
+          board: Array[Array[String]],
+          controller: (Array[Array[String]], String, Boolean) => (Array[Array[String]], Boolean),
+          drawer:  Array[Array[String]] => Unit,
+          twoPlayersGame: Boolean,
+          player1Turn: Boolean
+        ): Unit = {
+  println((if(twoPlayersGame) s"Player ${if (player1Turn) 1 else 2} - Turn\n" else "").concat("Enter Game Input: "))
   val input = scala.io.StdIn.readLine();
   if(input == "-1")
     return;
