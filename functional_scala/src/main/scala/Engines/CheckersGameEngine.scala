@@ -40,16 +40,17 @@ def checkers_controller(game_board: Array[Array[String]], input: String, player1
     game_board(from_row)(from_col) == "⚪" && from_row < to_row ||
     game_board(from_row)(from_col) == "⚫" && from_row > to_row
   )
-  validInput match
-    case false => return (game_board, validInput)
-    case true =>
-      game_board(to_row)(to_col) = game_board(from_row)(from_col)
-      game_board(from_row)(from_col) = "🟨"
-      Math.abs(from_row - to_row) match
-        case 2 => game_board(mid_row)(mid_col) = "🟨"
-        case _ =>
-
-  (game_board, validInput)
+  if(!validInput) return (game_board, validInput)
+  val eaten = Math.abs(from_row - to_row) match
+    case 2 => true
+    case _ => false
+  val board = Array.tabulate(8, 8) {(i, j) =>
+    if(i == from_row && j == from_col) "🟨"
+    else if(i == to_row && j == to_col) game_board(from_row)(from_col)
+    else if(i == mid_row && j == mid_col && eaten) "🟨"
+    else game_board(i)(j)
+  }
+  (board, validInput)
 }
 
 def checkers_drawer(game_board: Array[Array[String]]): Unit = {
