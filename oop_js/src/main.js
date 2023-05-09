@@ -1,10 +1,10 @@
 // Imports ...
-const mod1 = require('./ChessGameEngine')
-const mod2 = require('./Connect4GameEngine')
-const mod3 = require('./SudokuGameEngine')
-const mod4 = require('./EightQueensGameEngine')
-const mod5 = require('./CheckersGameEngine')
-const mod6 = require('./TicTacToeGameEngine')
+const mod1 = require('./Engines/ChessGameEngine')
+const mod2 = require('./Engines/Connect4GameEngine')
+const mod3 = require('./Engines/SudokuGameEngine')
+const mod4 = require('./Engines/EightQueensGameEngine')
+const mod5 = require('./Engines/CheckersGameEngine')
+const mod6 = require('./Engines/TicTacToeGameEngine')
 const readlineSync = require('readline-sync');
 
 
