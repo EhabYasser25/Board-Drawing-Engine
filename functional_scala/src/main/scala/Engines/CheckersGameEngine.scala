@@ -1,28 +1,14 @@
 package Engines
 
 def checkers_controller(game_board: Array[Array[String]], input: String, player1Turn: Boolean): (Array[Array[String]], Boolean) = {
-  input.length match {
-    case 5 =>
+  val normal_input = """([1-8])([a-h]) ([1-8])([a-h])""".r
+  input match
+    case normal_input(from_row, from_col, to_row, to_col) =>
     case _ => return (game_board, false)
-  }
-  input(0) | input(3) match {
-    case '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' =>
-    case _ => return (game_board, false)
-  }
-  input(1) | input(4) match {
-    case 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' =>
-    case _ => return (game_board, false)
-  }
-  input(2) match{
-    case ' ' =>
-    case _ => return (game_board, false)
-  }
   val from_row = 8 - Integer.parseInt(input(0).toString)
-  val from_col_letter = input(1)
+  val from_col = input(1) - 'a'
   val to_row = 8 - Integer.parseInt(input(3).toString)
-  val to_col_letter = input(4)
-  val from_col = from_col_letter - 'a'
-  val to_col = to_col_letter - 'a'
+  val to_col = input(4) - 'a'
   val mid_row = (from_row + to_row) / 2
   val mid_col = (from_col + to_col) / 2
   val validInput = !(
@@ -44,11 +30,12 @@ def checkers_controller(game_board: Array[Array[String]], input: String, player1
   val eaten = Math.abs(from_row - to_row) match
     case 2 => true
     case _ => false
-  val board = Array.tabulate(8, 8) {(i, j) =>
-    if(i == from_row && j == from_col) "🟨"
-    else if(i == to_row && j == to_col) game_board(from_row)(from_col)
-    else if(i == mid_row && j == mid_col && eaten) "🟨"
-    else game_board(i)(j)
+  val board: Array[Array[String]] = game_board.zipWithIndex.map {
+    case (row, rowIndex) =>
+      if(rowIndex == from_row) row.updated(from_col, "🟨")
+      else if(rowIndex == to_row) row.updated(to_col, game_board(from_row)(from_col))
+      else if(rowIndex == mid_row && eaten) row.updated(mid_col, "🟨")
+      else row
   }
   (board, validInput)
 }
