@@ -1,63 +1,75 @@
 package Engines
 
-def sudoku_controller(gameBoard: Array[Array[String]], userInput: String, player1Turn: Boolean): (Array[Array[String]], Boolean) = {
-  val valid = validateInput(gameBoard, userInput)
-  if (valid) {
-    val row = userInput(0).asDigit - 1
-    val col = userInput(1) - 'a'
-    val num = if (userInput.length == 4) userInput(3).toString else ""
-    gameBoard(row)(col) = num
+def sudoku_controller(gameBoard: Array[Array[String]], userInput: String, _player1Turn: Boolean) = {
+  validateInput(gameBoard, userInput) match {
+    case (action, true) => (action(gameBoard), true)
+    case (_, false) => (gameBoard, false)
   }
-  (gameBoard, valid)
 }
 
-def validateInput(gameBoard: Array[Array[String]], userInput: String): Boolean = {
-  // to store true if the current operation is removing element
-  val removeElement = userInput.length == 2
-
-  // handle removing element
-  val input = if (removeElement) userInput + "0" else userInput
-
-  // handle shorter or longer input
-  if (input.length != 4) return false
-
-  // get data from input string
-  val row = input(0).asDigit - 1
-  val col = input(1) - 'a'
-  val space = input(2)
-  val num = input(3).asDigit
-
-  // check boundaries
-  if (row < 0 || row >= 9 || col < 0 || col >= 9 || num < 0 || num > 9) return false
-
-  // check on the in-between space
-  if (space != ' ') return false
-
-  // handle removing element
-  if (removeElement) {
-    // check if it is initial element
-    if (!gameBoard(row)(col).forall(_.isDigit)) return false
-
-    // check in full cell
-    if (gameBoard(row)(col).toInt == 0) return false
-
-    // return true if element is not initial and the cell is full
-    return true
+def validateInput(gameBoard: Array[Array[String]], userInput: String)= {
+  val normalPattern = """([1-9])([a-i]) ([0-9])""".r
+  val deletePattern = """([1-9])([a-i])""".r
+  userInput match {
+    case normalPattern(row, col, num) => checkNormal(gameBoard, row.toInt - 1, col(0) - 'a', num.toInt)
+    case deletePattern(row, col) => checkDelete(gameBoard, row.toInt - 1, col(0) - 'a')
+    case _ => (null, false)
   }
+}
 
-  // check empty cell
-  if (gameBoard(row)(col).toInt != 0) return false
+def checkNormal(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) = {
+  (
+    checkEmpty(gameBoard, row, col),
+    checkRow(gameBoard, row, num),
+    checkCol(gameBoard, col, num),
+    checkBox(gameBoard, row, col, num)
+  ) match {
+    case (true, true, true, true) => (applyAction(row, col, num), true)
+    case _ => (null, false)
+  }
+}
 
-  // check on non-repetition of the num in its row or column
-  if (gameBoard(row).contains(num.toString) || gameBoard.map(_(col)).contains(num.toString)) return false
+def checkEmpty(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(row)(col)(0) == '0'
 
-  // check on non-repetition of the num in its square
+def checkRow(gameBoard: Array[Array[String]], row: Int, num: Int) = {
+  gameBoard(row)
+  .map(_(0).toString())
+  .contains(num.toString)
+  .unary_!
+}
+
+def checkCol(gameBoard: Array[Array[String]], col: Int, num: Int) = {
+  gameBoard
+  .map(_(col))
+  .map(_(0).toString())
+  .contains(num.toString)
+  .unary_!
+}
+
+def checkBox(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) = {
   val r = (row / 3) * 3
   val c = (col / 3) * 3
-  if (gameBoard.slice(r, r + 3).flatMap(_.slice(c, c + 3)).contains(num.toString)) return false
+  gameBoard
+  .slice(r, r + 3)
+  .flatMap(_.slice(c, c + 3))
+  .map(_(0).toString)
+  .contains(num.toString)
+  .unary_!
+}
 
-  // return true if passed all checks
-  true
+def checkDelete(gameBoard: Array[Array[String]], row: Int, col: Int) = {
+  checkFull(gameBoard, row, col) match {
+    case true => (applyAction(row, col, 0), true)
+    case _ => (null, false)
+  }
+}
+
+def checkFull(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(row)(col)(0) != '0'
+
+def applyAction(row: Int, col: Int, num: Int) = {
+  (gameBoard: Array[Array[String]]) =>
+    gameBoard(row)(col) = s"${num}e"
+    gameBoard
 }
 
 def sudoku_drawer(gameBoard: Array[Array[String]]): Unit = {
@@ -72,13 +84,12 @@ def sudoku_drawer(gameBoard: Array[Array[String]]): Unit = {
   val verticalLine = "|"
 
   // helper function to draw a single row
-  def drawRow(row: Array[String], rowIndex: Int): String = {
+  def drawRow(row: Array[String], rowIndex: Int) = {
     val rowString = row
     .map(cell => cell.replace("0", " ").updated(1, ' '))
     .grouped(3)
     .map(_.mkString(s"$verticalLine "))
     .mkString(s"$boldVerticalLine ", s"$boldVerticalLine ", s"$boldVerticalLine")
-
 
     val horizontalSeparator = if((rowIndex + 1) % 3 == 0) boldMiddleHorizontalLine else horizontalLine
 
@@ -97,11 +108,11 @@ def sudoku_drawer(gameBoard: Array[Array[String]]): Unit = {
   println(boardString)
 }
 
-def sudoku_initializer(): Array[Array[String]] = {
+def sudoku_initializer() = {
   Array(
     Array("5i", "3i", "0i", "0i", "7i", "0i", "0i", "0i", "0i"),
     Array("6i", "0i", "0i", "1i", "9i", "5i", "0i", "0i", "0i"),
-    Array("5i", "9i", "8i", "0i", "7i", "0i", "0i", "6i", "0i"),
+    Array("0i", "9i", "8i", "0i", "0i", "0i", "0i", "6i", "0i"),
     Array("8i", "0i", "0i", "0i", "6i", "0i", "0i", "0i", "3i"),
     Array("4i", "0i", "0i", "8i", "0i", "3i", "0i", "0i", "1i"),
     Array("7i", "0i", "0i", "0i", "2i", "0i", "0i", "0i", "6i"),

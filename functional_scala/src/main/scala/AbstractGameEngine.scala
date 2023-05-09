@@ -11,7 +11,7 @@ def AbstractGameEngine(
 }
 
 @tailrec
-private def play(
+def play(
                   board: Array[Array[String]],
                   controller: (Array[Array[String]], String, Boolean) => (Array[Array[String]], Boolean),
                   drawer:  Array[Array[String]] => Unit,
