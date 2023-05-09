@@ -2,13 +2,13 @@ package Engines
 
 def sudoku_controller(gameBoard: Array[Array[String]], userInput: String, _player1Turn: Boolean) = {
   validateInput(gameBoard, userInput) match {
-    case (action, true) => (action(gameBoard), true)
+    case (action, true) => (action(), true)
     case (_, false) => (gameBoard, false)
   }
 }
 
 def validateInput(gameBoard: Array[Array[String]], userInput: String)= {
-  val normalPattern = """([1-9])([a-i]) ([0-9])""".r
+  val normalPattern = """([1-9])([a-i]) ([1-9])""".r
   val deletePattern = """([1-9])([a-i])""".r
   userInput match {
     case normalPattern(row, col, num) => checkNormal(gameBoard, row.toInt - 1, col(0) - 'a', num.toInt)
@@ -24,7 +24,7 @@ def checkNormal(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) =
     checkCol(gameBoard, col, num),
     checkBox(gameBoard, row, col, num)
   ) match {
-    case (true, true, true, true) => (applyAction(row, col, num), true)
+    case (true, true, true, true) => (applyAction(gameBoard, row, col, num), true)
     case _ => (null, false)
   }
 }
@@ -32,44 +32,39 @@ def checkNormal(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) =
 def checkEmpty(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(row)(col)(0) == '0'
 
 def checkRow(gameBoard: Array[Array[String]], row: Int, num: Int) = {
-  gameBoard(row)
+  !gameBoard(row)
   .map(_(0).toString())
   .contains(num.toString)
-  .unary_!
 }
 
 def checkCol(gameBoard: Array[Array[String]], col: Int, num: Int) = {
-  gameBoard
+  !gameBoard
   .map(_(col))
   .map(_(0).toString())
   .contains(num.toString)
-  .unary_!
 }
 
 def checkBox(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) = {
   val r = (row / 3) * 3
   val c = (col / 3) * 3
-  gameBoard
+  !gameBoard
   .slice(r, r + 3)
   .flatMap(_.slice(c, c + 3))
   .map(_(0).toString)
   .contains(num.toString)
-  .unary_!
 }
 
 def checkDelete(gameBoard: Array[Array[String]], row: Int, col: Int) = {
   checkFull(gameBoard, row, col) match {
-    case true => (applyAction(row, col, 0), true)
+    case true => (applyAction(gameBoard, row, col, 0), true)
     case _ => (null, false)
   }
 }
 
 def checkFull(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(row)(col)(0) != '0'
 
-def applyAction(row: Int, col: Int, num: Int) = {
-  (gameBoard: Array[Array[String]]) =>
-    gameBoard(row)(col) = s"${num}e"
-    gameBoard
+def applyAction(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) = {
+  () => gameBoard.updated(row, gameBoard(row).updated(col, s"${num}e"))
 }
 
 def sudoku_drawer(gameBoard: Array[Array[String]]): Unit = {
