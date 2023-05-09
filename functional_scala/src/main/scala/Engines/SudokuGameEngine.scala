@@ -8,7 +8,7 @@ def sudoku_controller(gameBoard: Array[Array[String]], userInput: String, _playe
 }
 
 def validateInput(gameBoard: Array[Array[String]], userInput: String)= {
-  val normalPattern = """([1-9])([a-i]) ([0-9])""".r
+  val normalPattern = """([1-9])([a-i]) ([1-9])""".r
   val deletePattern = """([1-9])([a-i])""".r
   userInput match {
     case normalPattern(row, col, num) => checkNormal(gameBoard, row.toInt - 1, col(0) - 'a', num.toInt)
