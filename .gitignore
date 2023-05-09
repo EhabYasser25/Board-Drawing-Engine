@@ -2,6 +2,7 @@ FP_BDE/target/
 oop_js/.idea/workspace.xml
 .idea
 functional_scala/target/
+functional_scala/.metals/
 functional_scala/project/target/
 functional_scala/.bsp/
 functional_scala/project/
