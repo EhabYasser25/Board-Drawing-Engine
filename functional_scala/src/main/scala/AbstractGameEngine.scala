@@ -19,7 +19,10 @@ def play(
                   player1Turn: Boolean
                 ): Unit = {
   if (twoPlayersGame) println(f"Player ${if (player1Turn) 1 else 2} - Turn")
-  controller(board, scala.io.StdIn.readLine(), player1Turn) match {
+  val input = scala.io.StdIn.readLine();
+  if(input == "-1")
+    return;
+  controller(board, input, player1Turn) match {
     case (_,false) =>
       println(s"Invalid Move, Try again.")
       play(board, controller, drawer, twoPlayersGame, player1Turn)

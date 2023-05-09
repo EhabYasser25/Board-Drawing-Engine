@@ -13,7 +13,7 @@ class AbstractGameEngine {
         // return game_board
     }
 
-    async run(two_players_game){
+    run(two_players_game){
         let game_board;
         let inputStateIndicator = false;
         let player1Turn = true;
@@ -21,10 +21,16 @@ class AbstractGameEngine {
         while(true){
             if(two_players_game)
                 console.log(`Player ${player1Turn ? 1 : 2} - Turn`);
-            [game_board, inputStateIndicator] = this.controller(game_board, await this.scanInput(), player1Turn);
+            const input = this.scanInput();
+            if(input == "-1")
+                return;
+            [game_board, inputStateIndicator] = this.controller(game_board, input, player1Turn);
             while(!inputStateIndicator) {
                 console.log('Invalid Move, Try Again');
-                [game_board, inputStateIndicator] = this.controller(game_board, await this.scanInput(), player1Turn);
+                const input = this.scanInput();
+                if(input == "-1")
+                    return;
+                [game_board, inputStateIndicator] = this.controller(game_board, input, player1Turn);
             }
             console.clear()
             this.drawer(game_board);
@@ -33,7 +39,7 @@ class AbstractGameEngine {
         }
     }
 
-    async scanInput(){
+    scanInput(){
         // Scan the user input as a STRING from the console, however no modifications should
         // be made to this string as it would be passed to the controller to validate it depending
         // on the game logic.
