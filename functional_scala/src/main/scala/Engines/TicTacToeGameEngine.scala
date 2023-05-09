@@ -12,22 +12,20 @@ def ticTacToe_controller(game_board: Array[Array[String]], input: String, player
   val (number, letter) = input.splitAt(1)
   val row = number.toInt
   val column = letter.toLowerCase()
+  val col = column match
+    case "a" => 0
+    case "b" => 1
+    case "c" => 2
+    case _ => -1
+  if(col == -1) return (game_board, false)
   val validInput = !(column < "a" || column > "c"
-                    || game_board(row - 1)(
-    column match
-      case "a" => 0
-      case "b" => 1
-      case "c" => 2
-  ) != "🟩")
-  validInput match
-    case false => return (game_board, validInput)
-    case true => game_board(row - 1)(
-      column match
-        case "a" => 0
-        case "b" => 1
-        case "c" => 2
-    ) = if(player1Turn) "\u001b[31m" + "\u2009\u2009X\u2009\u2009" + "\u001B[0m" else "\u001b[34m" + "\u2009\u2009O\u2009\u2009" + "\u001B[0m"
-  (game_board, validInput)
+                    || game_board(row - 1)(col) != "🟩")
+  if(!validInput) return (game_board, validInput)
+  val board = Array.tabulate(3, 3) {(i, j) =>
+    if(i == row - 1 && j == col) if(player1Turn) "\u001b[31m" + "\u2009\u2009X\u2009\u2009" + "\u001B[0m" else "\u001b[34m" + "\u2009\u2009O\u2009\u2009" + "\u001B[0m"
+    else game_board(i)(j)
+  }
+  (board, validInput)
 }
 
 def ticTacToe_drawer(game_board: Array[Array[String]]): Unit = {
