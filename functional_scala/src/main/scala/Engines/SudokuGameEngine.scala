@@ -67,9 +67,7 @@ def checkDelete(gameBoard: Array[Array[String]], row: Int, col: Int) = {
 def checkFull(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(row)(col)(0) != '0'
 
 def applyAction(row: Int, col: Int, num: Int) = {
-  (gameBoard: Array[Array[String]]) =>
-    gameBoard(row)(col) = s"${num}e"
-    gameBoard
+  (gameBoard: Array[Array[String]]) => gameBoard.updated(row, gameBoard(row).updated(col, s"${num}e"))
 }
 
 def sudoku_drawer(gameBoard: Array[Array[String]]): Unit = {
