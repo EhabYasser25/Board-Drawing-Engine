@@ -3,15 +3,17 @@ package Engines
 def eightQueens_controller(game_board: Array[Array[String]], input: String, player1Turn: Boolean): (Array[Array[String]], Boolean) = {
 
   regex(input) match {
-    case (row, col, true) => if isValidMove(isQueenPresentInRowOrColumn(game_board, row, col),
-                                            isQueenPresentInDiagonals(game_board, row, col),
-                                            game_board(row)(col) == "♕")
+    case (row, col, true) => if isValidMove(row, col,
+                                            isQueenPresentInRowOrColumn,
+                                            isQueenPresentInDiagonals,
+                                            game_board)
                               then (modifyBoard(game_board, row, col), true)
                               else (game_board, false)
     case(_, _, false) =>  (game_board, false)
   }
 
 }
+
 def regex(input: String): (Int, Int, Boolean) = {
   val row = input.charAt(0).toString.toInt
   val col = input.charAt(1).toLower - 'a' + 1
@@ -20,6 +22,13 @@ def regex(input: String): (Int, Int, Boolean) = {
 
 def isValidMove(rowColCheck: Boolean, diagonalCheck: Boolean, queenInCell: Boolean): Boolean = {
   (!rowColCheck && !diagonalCheck) || queenInCell
+}
+
+def isValidMove(row: Int, col: Int,
+                isQueenInRowOrColumn: (Array[Array[String]], Int, Int) => Boolean,
+                isQueenInDiagonal: (Array[Array[String]], Int, Int) => Boolean,
+                game_board: Array[Array[String]]): Boolean = {
+  (!isQueenInRowOrColumn(game_board, row, col) && !isQueenInDiagonal(game_board, row, col)) || game_board(row)(col) == "♕"
 }
 
 def isQueenPresentInDiagonals(game_board: Array[Array[String]],row: Int, col: Int): Boolean = {
