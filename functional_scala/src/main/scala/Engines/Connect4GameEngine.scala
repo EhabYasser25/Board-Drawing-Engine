@@ -8,7 +8,7 @@ def connect4_controller(game_board: Array[Array[String]], input: String, player1
     val playerColor = if(player1Turn) "🔴" else "🟡"
     game_board.zipWithIndex.map {
       case (row, rowIndex) =>
-        if((rowIndex == game_board.length - 1 || game_board(rowIndex + 1)(col - 1) != "⚪") && game_board(rowIndex)(col - 1) == "⚪")
+        if((rowIndex == game_board.length - 1 || game_board(rowIndex + 1)(col - 1) != "⚪") && row(col - 1) == "⚪")
           row.updated(col - 1, playerColor)
         else
           row
