@@ -17,7 +17,7 @@ def ticTacToe_controller(game_board: Array[Array[String]], input: String, player
   if(!validInput) return (game_board, validInput)
   val board: Array[Array[String]] = game_board.zipWithIndex.map {
     case (_row, rowIndex) =>
-      if(rowIndex == row - 1) _row.updated(col, if(player1Turn) "\u001b[31m" + "\u2009\u2009X\u2009\u2009" + "\u001B[0m" else "\u001b[34m" + "\u2009\u2009O\u2009\u2009" + "\u001B[0m")
+      if(rowIndex == row - 1) _row.updated(col, if(player1Turn) "\u001b[31m" + "X" + "\u001B[0m" else "\u001b[34m" + "O" + "\u001B[0m")
       else _row
   }
   (board, validInput)
