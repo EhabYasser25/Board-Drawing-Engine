@@ -1,11 +1,11 @@
 package Engines
 
 def chess_controller(game_board: Array[Array[String]], input: String, player1Turn: Boolean): (Array[Array[String]], Boolean) = {
+  val inputPattern = """([1-8])([a-h]) ([1-8])([a-h])( )*""".r
+  if (!input.matches(inputPattern.regex)) return (game_board, false)                          // simple validation of the input
 
-  if (input.length < 5) return (game_board, false)                          // simple validation of the input
   val pos: Array[Int]  = Array(input(0).asDigit - 1, input(1) - 'a', input(3).asDigit - 1, input(4) - 'a')
   val diff: Array[Int] = Array(pos(2) - pos(0), pos(3) - pos(1));
-
   /*
    * validating input ...
    * good_flag is true when !badCond1 && !badCond2 etc ... = !(badCond1 || badCond2 || etc ...)
@@ -14,8 +14,7 @@ def chess_controller(game_board: Array[Array[String]], input: String, player1Tur
   // phase 1 of validation
   val good_flag: Boolean =
     !(
-    pos.exists(_ < 0) || pos.exists(_ > 7)                                                // input is out of index
-    || pos.exists(_.toDouble.isNaN) || (pos(0) == pos(2) && pos(1) == pos(3))             // input is incorrect or no changes were made
+    pos.exists(_.toDouble.isNaN) || (pos(0) == pos(2) && pos(1) == pos(3))             // input is incorrect or no changes were made
     || (game_board(pos(0))(pos(1)).substring(0, 5) == game_board(pos(2))(pos(3)).substring(0, 5)
       && game_board(pos(2))(pos(3)).takeRight(6) != "Square")                         // Attacking themselves
     || game_board(pos(0))(pos(1)).takeRight(6) == "Square"                            // moving a square not a piece
@@ -57,12 +56,13 @@ def chess_controller(game_board: Array[Array[String]], input: String, player1Tur
         println("Chess Controller - Phase 2 Of Validation - Error")
         false
   )
-  if(good_flag){
-    game_board(pos(2))(pos(3)) = game_board(pos(0))(pos(1))
-    game_board(pos(0))(pos(1)) = if (((pos(0) + pos(1)) % 2) == 0) "White Square" else "Black Square"
-  }
-  (game_board, good_flag)
+  (if(good_flag) applyMove(pos)(game_board) else game_board, good_flag)
 }
+
+def applyMove(pos: Array[Int]): Array[Array[String]] => Array[Array[String]] =
+  (board: Array[Array[String]]) =>
+    board.updated(pos(2), board(pos(2)).updated(pos(3), board(pos(0))(pos(1))))
+      .updated(pos(0), board(pos(0)).updated(pos(1), if( ((pos(0) + pos(1)) % 2) == 0) "White Square" else "Black Square"))
 
 def chess_drawer(game_board: Array[Array[String]]): Unit = println(
   (0 to 7).map { i =>
