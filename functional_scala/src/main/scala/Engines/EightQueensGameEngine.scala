@@ -2,7 +2,7 @@ package Engines
 
 def eightQueens_controller(game_board: Array[Array[String]], input: String, player1Turn: Boolean): (Array[Array[String]], Boolean) = {
 
-  regex(input) match {
+  boundCheck(input) match {
     case (row, col, true) => if isValidMove(row, col,
                                             isQueenPresentInRowOrColumn,
                                             isQueenPresentInDiagonals,
@@ -14,14 +14,12 @@ def eightQueens_controller(game_board: Array[Array[String]], input: String, play
 
 }
 
-def regex(input: String): (Int, Int, Boolean) = {
-  val row = input.charAt(0).toString.toInt
+def boundCheck(input: String): (Int, Int, Boolean) = {
+  val pattern = """([1-8])(a-h)""".r
   val col = input.charAt(1).toLower - 'a' + 1
-  (row, col, row >= 1 && row <= 8 && col >= 1 && col <= 8)
-}
-
-def isValidMove(rowColCheck: Boolean, diagonalCheck: Boolean, queenInCell: Boolean): Boolean = {
-  (!rowColCheck && !diagonalCheck) || queenInCell
+  val row = input.charAt(0).toString.toInt
+  if (!input.matches(pattern.regex)) (row, col, false)
+  else (row, col, true)
 }
 
 def isValidMove(row: Int, col: Int,
