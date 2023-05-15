@@ -46,7 +46,7 @@ while(true){
             gameInstance = new mod6.TicTacToeGameEngine();
             break;
         default:
-            break;
+            continue;
     }
 
     // 3- gameInstance.run()
