@@ -15,7 +15,8 @@ def eightQueens_controller(game_board: Array[Array[String]], input: String, play
 }
 
 def boundCheck(input: String): (Int, Int, Boolean) = {
-  val row = input.charAt(0).toString.toInt
+  val row = if (input.matches("\\d.*")) input.charAt(0).toString.toInt else -1
+//  val row = input.charAt(0).toString.toInt
   val col = input.charAt(1).toLower - 'a' + 1
   (row, col, row >= 1 && row <= 8 && col >= 1 && col <= 8)
 }

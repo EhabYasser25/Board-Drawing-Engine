@@ -8,7 +8,7 @@ const mod6 = require('./Engines/TicTacToeGameEngine')
 const readlineSync = require('readline-sync');
 
 
-while(true){
+while (true) {
     // 1- Scan the user input to choose a game
     const gameNumber = readlineSync.question(
         'Enter the choice number:\n' +
@@ -17,14 +17,14 @@ while(true){
         '3. Sudoku\n' +
         '4. 8 Queens\n' +
         '5. Checkers\n' +
-        '6. Tic Tac Toe\n' + 
+        '6. Tic Tac Toe\n' +
         'Enter -1 in any Game to return to main menu.\n'
     )
 
     // 2- depending on the input, create the gameInstance
     let gameInstance;
     let two_players_game = true;
-    switch (gameNumber){
+    switch (gameNumber) {
         case '1':
             gameInstance = new mod1.ChessGameEngine();
             break;
@@ -46,7 +46,7 @@ while(true){
             gameInstance = new mod6.TicTacToeGameEngine();
             break;
         default:
-            break;
+            continue;
     }
 
     // 3- gameInstance.run()
