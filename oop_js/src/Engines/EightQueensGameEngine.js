@@ -91,6 +91,21 @@ class EightQueensGameEngine extends mod1.AbstractGameEngine {
             }
         }
 
+        // Check if there is another queen in the same diagonal (descending)
+        for (let i = row - 1, j = col + 1; j < game_board.length && i >= 0; i--, j++) {
+            if (game_board[i][j] === '♕') {
+                return [game_board, false];
+            }
+        }
+
+
+        // Check if there is another queen in the same diagonal (descending)
+        for (let i = row + 1, j = col + 1; i < game_board.length && j < game_board.length; i++, j++) {
+            if (game_board[i][j] === '♕') {
+                return [game_board, false];
+            }
+        }
+
         game_board[row][col] = '♕'
         return [game_board, true]
     }

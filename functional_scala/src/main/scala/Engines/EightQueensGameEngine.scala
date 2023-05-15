@@ -28,8 +28,8 @@ def isValidMove(row: Int, col: Int,
 }
 
 def isQueenPresentInDiagonals(game_board: Array[Array[String]],row: Int, col: Int): Boolean = {
-  val diagonalPositions = (1 to 8).map(d => (row - d, col - d)) ++ (1 to 8).map(d => (row + d, col + d))
-  diagonalPositions.exists { case (r, c) =>
+  val diagonalPositions = (1 to 8).map(d => (row - d, col - d)) ++ (1 to 8).map(d => (row + d, col + d)) ++ (1 to 8).map(d => (row + d, col - d)) ++ (1 to 8).map(d => (row - d, col + d))
+  diagonalPositions.exists { (r, c) =>
     r >= 1 && r <= 8 && c >= 1 && c <= 8 && game_board(r)(c) == "♕"
   }
 }
