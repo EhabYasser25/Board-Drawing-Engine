@@ -23,7 +23,7 @@ def connect4_controller(game_board: Array[Array[String]], input: String, player1
 def connect4_drawer(game_board: Array[Array[String]]): Unit = {
   val blueColor = "\u001B[44m"
   val resetColor = "\u001B[0m"
-  val rows = game_board.map(row => blueColor + row.mkString(" ") + resetColor)
+  val rows = game_board.map(row => blueColor + row.mkString(" ") + " " + resetColor)
   val board = s"$blueColor 1  2  3  4  5  6  7 $resetColor\n${rows.mkString("\n")}"
   println(board)
 }
