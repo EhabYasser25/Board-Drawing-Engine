@@ -21,32 +21,32 @@ def chess_controller(game_board: Array[Array[String]], input: String, player1Tur
     || (game_board(pos(0))(pos(1)).substring(0, 5) == "Black" && player1Turn)
     || (game_board(pos(0))(pos(1)).substring(0, 5) == "White" && !player1Turn)
   )
-  && (    // phase 2 of validation
+  && (    // phase 2 & 3 of validation
     game_board(pos(0))(pos(1)) match
       case kingPiece if kingPiece.contains("King") =>
-        diff.forall(_ <= 1);
+          diff.forall(Math.abs(_) <= 1);
       case queenPiece if queenPiece.contains("Queen") =>
         (Math.abs(diff(0)) == Math.abs(diff(1)) || pos(0) == pos(2) || pos(1) == pos(3)) &&
         (
           if (Math.abs(diff(0)) == Math.abs(diff(1)))
-            (1 until Math.abs(diff(0))).forall(m => game_board(pos(0) + (m * diff(0) / (if(Math.abs(diff(0)) != 0) Math.abs(diff(0)) else 1) ))(pos(1) + (m * diff(1) / (if(Math.abs(diff(1)) != 0) Math.abs(diff(0)) else 1) )).takeRight(6) == "Square")
+            (1 until Math.abs(diff(0))).forall(m => game_board(pos(0) + (m * diff(0) / (if(Math.abs(diff(0)) != 0) Math.abs(diff(0)) else 1) ))(pos(1) + (m * diff(1) / (if(Math.abs(diff(1)) != 0) Math.abs(diff(1)) else 1) )).takeRight(6) == "Square")
           else
             if(pos(0) == pos(2))
-              (1 until Math.abs(diff(1))).forall(m => game_board(pos(0))(pos(1) + (m * diff(1) / (if(Math.abs(diff(1)) != 0) Math.abs(diff(0)) else 1) )).takeRight(6) == "Square")
+              (1 until Math.abs(diff(1))).forall(m => game_board(pos(0))(pos(1) + (m * diff(1) / (if(Math.abs(diff(1)) != 0) Math.abs(diff(1)) else 1) )).takeRight(6) == "Square")
             else
-              (1 until Math.abs(diff(0))).forall(m => game_board(pos(0) + (m * diff(1) / (if(Math.abs(diff(1)) != 0) Math.abs(diff(0)) else 1) ))(pos(1)).takeRight(6) == "Square")
+              (1 until Math.abs(diff(0))).forall(m => game_board(pos(0) + (m * diff(0) / (if(Math.abs(diff(0)) != 0) Math.abs(diff(0)) else 1) ))(pos(1)).takeRight(6) == "Square")
         )
       case rookPiece if rookPiece.contains("Rook") =>
         (pos(0) == pos(2) || pos(1) == pos(3)) &&
         (
           if (pos(0) == pos(2))
-            (1 until Math.abs(diff(1))).forall(m => game_board(pos(0))(pos(1) + (m * diff(1) / (if(Math.abs(diff(1)) != 0) Math.abs(diff(0)) else 1) )).takeRight(6) == "Square")
+            (1 until Math.abs(diff(1))).forall(m => game_board(pos(0))(pos(1) + (m * diff(1) / (if(Math.abs(diff(1)) != 0) Math.abs(diff(1)) else 1) )).takeRight(6) == "Square")
           else
-            (1 until Math.abs(diff(0))).forall(m => game_board(pos(0) + (m * diff(1) / (if(Math.abs(diff(1)) != 0) Math.abs(diff(0)) else 1) ))(pos(1)).takeRight(6) == "Square")
+            (1 until Math.abs(diff(0))).forall(m => game_board(pos(0) + (m * diff(0) / (if(Math.abs(diff(0)) != 0) Math.abs(diff(0)) else 1) ))(pos(1)).takeRight(6) == "Square")
         )
       case bishopPiece if bishopPiece.contains("Bishop") =>
         (Math.abs(diff(0)) == Math.abs(diff(1))) &&
-          (1 until Math.abs(diff(0))).forall(m => game_board(pos(0) + (m * diff(0) / (if(Math.abs(diff(0)) != 0) Math.abs(diff(0)) else 1) ))(pos(1) + (m * diff(1) / (if(Math.abs(diff(1)) != 0) Math.abs(diff(0)) else 1) )).takeRight(6) == "Square")
+          (1 until Math.abs(diff(0))).forall(m => game_board(pos(0) + (m * diff(0) / (if(Math.abs(diff(0)) != 0) Math.abs(diff(0)) else 1) ))(pos(1) + (m * diff(1) / (if(Math.abs(diff(1)) != 0) Math.abs(diff(1)) else 1) )).takeRight(6) == "Square")
       case knightPiece if knightPiece.contains("Knight") =>
         Math.abs(diff(0)) + Math.abs(diff(1)) == 3
       case pawnPiece if pawnPiece.contains("Pawn") =>
@@ -56,13 +56,18 @@ def chess_controller(game_board: Array[Array[String]], input: String, player1Tur
         println("Chess Controller - Phase 2 Of Validation - Error")
         false
   )
-  (if(good_flag) applyMove(pos)(game_board) else game_board, good_flag)
+  (if(good_flag) applyMove(game_board, pos) else game_board, good_flag)
 }
 
-def applyMove(pos: Array[Int]): Array[Array[String]] => Array[Array[String]] =
-  (board: Array[Array[String]]) =>
-    board.updated(pos(2), board(pos(2)).updated(pos(3), board(pos(0))(pos(1))))
-      .updated(pos(0), board(pos(0)).updated(pos(1), if( ((pos(0) + pos(1)) % 2) == 0) "White Square" else "Black Square"))
+def applyMove(game_Board: Array[Array[String]], pos: Array[Int]) = {
+  val newBoard: Array[Array[String]] = Array.ofDim[String](8, 8);
+  for(i <- 0 to 7)
+    newBoard(i) = game_Board(i).clone();
+  newBoard(pos(2))(pos(3)) = newBoard(pos(0))(pos(1))
+  newBoard(pos(0))(pos(1)) = if((pos(0) + pos(1)) % 2 == 0) "White Square" else "Black Square"
+  game_Board(0)(0) = "hey";
+  newBoard;
+}
 
 def chess_drawer(game_board: Array[Array[String]]): Unit = println(
   (0 to 7).map { i =>
