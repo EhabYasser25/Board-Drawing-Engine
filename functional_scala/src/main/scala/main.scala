@@ -1,7 +1,10 @@
 import Engines._
-
+import org.jpl7._
 @main
 def main(): Unit = {
+  System.setProperty("java.library.path", "C:/Program Files/swipl/lib/jpl.jar")
+  val sudoku = new Query("consult('D:/CSED/semester4/Paradigms/Board-Drawing-Engine/prolog/src/main/scala/Sudoku.pl')")
+  val queens8 = new Query("consult('D:/CSED/semester4/Paradigms/Board-Drawing-Engine/prolog/src/main/scala/Queens8.pl')")
   while(true){
     println(
       "Enter the game number:\n" +
