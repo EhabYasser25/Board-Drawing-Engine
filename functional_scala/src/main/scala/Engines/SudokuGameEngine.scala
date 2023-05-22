@@ -2,6 +2,7 @@ package Engines
 
 import scala.util.Random
 import scala.util.Random._
+import org.jpl7._
 
 def sudoku_controller(gameBoard: Array[Array[String]], userInput: String, _player1Turn: Boolean) = {
   validateInput(gameBoard, userInput) match {
@@ -16,7 +17,7 @@ def validateInput(gameBoard: Array[Array[String]], userInput: String)= {
   userInput match {
     case normalPattern(row, col, num) => checkNormal(gameBoard, row.toInt - 1, col(0) - 'a', num.toInt)
     case deletePattern(row, col) => checkDelete(gameBoard, row.toInt - 1, col(0) - 'a')
-    //    case "solve" => checkSolve()
+    case "solve" => checkSolve(gameBoard)
     case _ => (null, false)
   }
 }
@@ -28,7 +29,7 @@ def checkNormal(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) =
     checkCol(gameBoard, col, num),
     checkBox(gameBoard, row, col, num)
   ) match {
-    case (true, true, true, true) => (applyAction(gameBoard, row, col, num), true)
+    case (true, true, true, true) => (applyAction(gameBoard, row, col, s"$num "), true)
     case (a, b, c, d) => (null, false)
   }
 }
@@ -63,7 +64,7 @@ def checkDelete(gameBoard: Array[Array[String]], row: Int, col: Int) = {
     checkFull(gameBoard, row, col),
     checkInitial(gameBoard, row, col)
   ) match {
-    case (true, false) => (applyAction(gameBoard, row, col, 0), true)
+    case (true, false) => (applyAction(gameBoard, row, col, "0i"), true)
     case _ => (null, false)
   }
 }
@@ -72,7 +73,29 @@ def checkFull(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(r
 
 def checkInitial(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(row)(col).contains("i")
 
-def applyAction(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) = () => gameBoard.updated(row, gameBoard(row).updated(col, s"$num "))
+def checkSolve(gameBoard: Array[Array[String]]): (() => Array[Array[String]], Boolean) = {
+  checkInitialBoard(gameBoard) match {
+    case board if board != null =>
+      val goal = board.map(_.mkString("[", ", ", "]")).mkString("[", ",", "]").replaceAll("0", "_")
+      val SudokuQ = new Query("consult('src/main/scala/solvers/sudoku.pl')")
+      SudokuQ.hasSolution
+      val Solver = new Query(s"Rows = $goal, sudoku(Rows), maplist(label, Rows), maplist(portray_clause, Rows)")
+      if(!Solver.hasSolution) return (null, false)
+      val Soln = Solver.oneSolution().get("Rows")
+      val tmpBoard = Soln.toString.stripPrefix("[[").stripSuffix("]]").split("], \\[").map(_.split(", "))
+      val newBoard = tmpBoard.zipWithIndex.map { case (elem, index) =>
+        elem.zipWithIndex.map { case (elm, indx) =>
+          elm.concat(if(gameBoard(index)(indx)(0).equals('0')) "0" else gameBoard(index)(indx)(1).toString)
+        }
+      }
+      (applyAction(newBoard, 0, 0, newBoard(0)(0)), true)
+    case _ => (null, false)
+  }
+}
+
+def checkInitialBoard(gameBoard: Array[Array[String]]) = if (gameBoard.forall(_.forall(_.contains("i")))) gameBoard.map(_.map(_.replace("i", ""))) else null
+
+def applyAction(gameBoard: Array[Array[String]], row: Int, col: Int, cell: String) = () => gameBoard.updated(row, gameBoard(row).updated(col, cell))
 
 def sudoku_drawer(gameBoard: Array[Array[String]]): Unit = {
   val redColor = "\u001b[31m"
