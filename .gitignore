@@ -14,3 +14,4 @@ functional_scala/project/target/scala-2.12/sbt-1.0/update/update_cache_2.12/outp
 functional_scala/project/target/scala-2.12/sbt-1.0/update/update_cache_2.12/output
 functional_scala/project/target/scala-2.12/sbt-1.0/update/update_cache_2.12/inputs
 functional_scala/src/main/scala/Engines/EightQueensGameEngine.scala
+*.sbt
