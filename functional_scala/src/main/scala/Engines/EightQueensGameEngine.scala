@@ -31,9 +31,9 @@ def boundCheck(input: String) = {
 }
 
 def solve(): (Array[Array[String]], Boolean) = { // TODO Int --> String
-  val ipPath = "D:/CSED/semester4/Paradigms/Board-Drawing-Engine/functional_scala/src/main/scala/solvers/board"
-  val opPath = "D:/CSED/semester4/Paradigms/Board-Drawing-Engine/functional_scala/src/main/scala/solvers/solution"
-  val queries = "D:/CSED/semester4/Paradigms/Board-Drawing-Engine/functional_scala/src/main/scala/solvers/EightQueens.pl"
+  val ipPath = "/src/main/scala/solvers/board"
+  val opPath = "/src/main/scala/solvers/solution"
+  val queries = "/src/main/scala/solvers/EightQueens.pl"
 
   val connect = new Query(s"consult('$queries')") // The queries
 
