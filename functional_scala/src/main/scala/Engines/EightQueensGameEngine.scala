@@ -1,13 +1,16 @@
 package Engines
 
-import org.jpl7.{Atom, Query, Variable}
+import org.jpl7.{Atom, Query, Term, Variable}
 
 import java.io.PrintWriter
 
 def eightQueens_controller(game_board: Array[Array[String]], input: String, player1Turn: Boolean): (Array[Array[String]], Boolean) = {
 
-  if(input == "solve" && isFirstMove(game_board))
-    return solve()
+  if(input == "solve" && isFirstMove(game_board)) {
+    val queensList = solve()
+    println(queensList.mkString(", ")) // Print the positions of the queens
+    return autoSoleAction(game_board, queensList)
+  }
 
   boundCheck(input) match {
     case (row, col, true) => if isValidMove(row, col,
@@ -30,76 +33,37 @@ def boundCheck(input: String) = {
   }
 }
 
-def solve(): (Array[Array[String]], Boolean) = { // TODO Int --> String
-  val ipPath = "/src/main/scala/solvers/board"
-  val opPath = "/src/main/scala/solvers/solution"
-  val queries = "/src/main/scala/solvers/EightQueens.pl"
+def solve(): Array[String] = {
+  val queries = "D:/CSED/semester4/Paradigms/Board-Drawing-Engine/functional_scala/src/main/scala/solvers/EightQueens.pl"
 
   val connect = new Query(s"consult('$queries')") // The queries
 
   val sol = connect.hasSolution // for debugging
 
-  val board: Array[Array[Int]] = Array.ofDim[Int](8, 8) // initialize board
-
-  printBoardToFile(ipPath, board) // print initial board
-
-  // Create a Prolog term for the file path and board variable
-  val filePathTerm = new Atom(s"$ipPath")
-  val boardTerm = new Variable("Board")
-
-  // Create a Prolog query to call the read_board predicate
-  val queryReadBoard = new Query("read_board", Array(filePathTerm, boardTerm))
-
-  // Execute the query
-  val resultReadBoard = queryReadBoard.hasSolution
-
-  if (resultReadBoard) {
-    val solution = queryReadBoard.oneSolution().get("Board")
-    println(s"Board read successfully: $solution")
+  val query = new Query("n_queens(8, Qs), labeling([ff], Qs), write(Qs)") // Prolog query to solve the 8 Queens problem
+  if (query.hasSolution) {
+    val solution = query.oneSolution() // Get the first solution
+    val queens = solution.get("Qs").asInstanceOf[Term] // Extract the solution for the Qs variable
+    val queensList = queens.toTermArray.map(_.toString) // Convert the Prolog terms to strings
+    return queensList
   } else {
-    println("Failed to read the board.")
+    println("No solution found.")
+    val empty: Array[String] = Array.ofDim(8)
+    return empty
   }
-
-//  val solver = new Query("solve(board)") // Solve the puzzle
-//
-//  val prologWriteFile = new Query(s"save_solution('$opPath')") // write to file
-//
-  val solution = convertIntBoardToString(board)
-
-  (solution, true)
 }
 
-def convertIntBoardToString(board: Array[Array[Int]]) : Array[Array[String]] = { // TODO Fix
-  val white = "\u001B[37m" // White color
-  val reset = "\u001B[0m"
-
-  val initialBoard = board.zipWithIndex.map { case (rowArr, rowIndex) =>
-    rowArr.zipWithIndex.map { case (_, colIndex) =>
-      if (rowIndex == 0) {
-        if (colIndex == 0) "  " else s" $white${('a' + colIndex - 1).toChar}$reset "
-      } else if(board(rowIndex)(colIndex) == 1) { "♕" }
-      else if (colIndex == 0 && rowIndex > 0) {
-        s"$white$rowIndex$reset"
-      } else if ((rowIndex % 2 == 0 && colIndex % 2 == 0) || (rowIndex % 2 == 1 && colIndex % 2 == 1)) {
-        if (colIndex == 1) " 🟧 " else "🟧 "
-      } else {
-        if (colIndex == 1) " ⬜ " else "⬜ "
-      }
+def autoSoleAction(game_board: Array[Array[String]], solution: Array[String]): (Array[Array[String]], Boolean) = {
+  if (solution(0) != null) {
+    val updated_board = solution.zipWithIndex.foldLeft(game_board) { case (board, (row, col)) =>
+      val updated_row = board(row.toInt).updated(col + 1, "♕")
+      board.updated(row.toInt, updated_row)
     }
+    (updated_board, true)
+  } else {
+    (game_board, false)
   }
-  initialBoard
-}
 
-def printBoardToFile(filePath: String, board: Array[Array[Int]]): Unit = { // DONE
-  val writer = new PrintWriter(filePath)
-  try {
-    for (row <- board) {
-      val rowString = row.map(_.toString).mkString(" ")
-      writer.println(rowString)
-    }
-  } finally {
-    writer.close()
-  }
 }
 
 def isFirstMove(gameBoard: Array[Array[String]]): Boolean = {
