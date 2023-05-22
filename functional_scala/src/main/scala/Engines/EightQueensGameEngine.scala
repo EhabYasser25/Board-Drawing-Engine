@@ -9,7 +9,11 @@ def eightQueens_controller(game_board: Array[Array[String]], input: String, play
   if(input == "solve" && isFirstMove(game_board)) {
     val queensList = solve()
     println(queensList.mkString(", ")) // Print the positions of the queens
-    return autoSoleAction(game_board, queensList)
+    return autoSolveAction(game_board, queensList)
+  } else if(input == "solve" && !isFirstMove(game_board)) {
+    val queenList = completeTheSolution(game_board)
+    println(queenList.mkString(", ")) // Print the positions of the queens
+    return autoSolveAction(game_board, queenList)
   }
 
   boundCheck(input) match {
@@ -34,7 +38,7 @@ def boundCheck(input: String) = {
 }
 
 def solve(): Array[String] = {
-  val queries = "D:/CSED/semester4/Paradigms/Board-Drawing-Engine/functional_scala/src/main/scala/solvers/EightQueens.pl"
+  val queries = "src/main/scala/solvers/EightQueens.pl"
 
   val connect = new Query(s"consult('$queries')") // The queries
 
@@ -53,18 +57,51 @@ def solve(): Array[String] = {
   }
 }
 
-def autoSoleAction(game_board: Array[Array[String]], solution: Array[String]): (Array[Array[String]], Boolean) = {
+def completeTheSolution(game_board: Array[Array[String]]): Array[String] = {
+  val queries = "src/main/scala/solvers/EightQueensComp.pl"
+
+  val connect = new Query(s"consult('$queries')") // The queries
+
+  val sol = connect.hasSolution // for debugging
+
+  // Traverse the game_board and find the positions of the queens
+  val queensPositions = for {
+    (row, rowIndex) <- game_board.zipWithIndex
+    (value, colIndex) <- row.zipWithIndex
+    if value == "♕" // Assuming "♕" represents a queen
+  } yield s"${rowIndex}/${colIndex}"
+
+  val queensTerm = new Atom(queensPositions.mkString("[", ",", "]"))
+  val query = new Query(s"n_queens(8, $queensTerm, Qs)")
+
+  if (query.hasSolution) {
+    val solution = query.oneSolution() // Get the first solution
+    val queens = solution.get("Qs").asInstanceOf[Term] // Extract the solution for the Qs variable
+    val queensList = queens.toTermArray.map(_.toString) // Convert the Prolog terms to strings
+    return queensList
+  } else {
+    println("No solution found.")
+    val empty: Array[String] = Array.ofDim(8)
+    return empty
+  }
+}
+
+def autoSolveAction(game_board: Array[Array[String]], solution: Array[String]): (Array[Array[String]], Boolean) = {
   if (solution(0) != null) {
     val updated_board = solution.zipWithIndex.foldLeft(game_board) { case (board, (row, col)) =>
-      val updated_row = board(row.toInt).updated(col + 1, "♕")
-      board.updated(row.toInt, updated_row)
+      if (game_board(row.toInt)(col) != "♕") {
+        val updated_row = board(row.toInt).updated(col + 1, "♕")
+        board.updated(row.toInt, updated_row)
+      } else {
+        board
+      }
     }
     (updated_board, true)
   } else {
     (game_board, false)
   }
-
 }
+
 
 def isFirstMove(gameBoard: Array[Array[String]]): Boolean = {
   !gameBoard.exists(row => row.exists(_.contains("♕")))
