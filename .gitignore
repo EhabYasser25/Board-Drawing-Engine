@@ -6,3 +6,10 @@ functional_scala/.metals/
 functional_scala/project/target/
 functional_scala/.bsp/
 functional_scala/project/
+functional_scala/family.pl
+functional_scala/project/target/scala-2.12/sbt-1.0/update/update_cache_2.12/output
+functional_scala/project/target/streams/_global/update/_global/streams/out
+functional_scala/project/target/streams/compile/_global/_global/compileOutputs/previous
+functional_scala/project/target/scala-2.12/sbt-1.0/update/update_cache_2.12/output
+functional_scala/project/target/scala-2.12/sbt-1.0/update/update_cache_2.12/output
+functional_scala/project/target/scala-2.12/sbt-1.0/update/update_cache_2.12/inputs

@@ -1,5 +1,8 @@
 package Engines
 
+import scala.util.Random
+import scala.util.Random._
+
 def sudoku_controller(gameBoard: Array[Array[String]], userInput: String, _player1Turn: Boolean) = {
   validateInput(gameBoard, userInput) match {
     case (action, true) => (action(), true)
@@ -13,6 +16,7 @@ def validateInput(gameBoard: Array[Array[String]], userInput: String)= {
   userInput match {
     case normalPattern(row, col, num) => checkNormal(gameBoard, row.toInt - 1, col(0) - 'a', num.toInt)
     case deletePattern(row, col) => checkDelete(gameBoard, row.toInt - 1, col(0) - 'a')
+    //    case "solve" => checkSolve()
     case _ => (null, false)
   }
 }
@@ -25,7 +29,7 @@ def checkNormal(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) =
     checkBox(gameBoard, row, col, num)
   ) match {
     case (true, true, true, true) => (applyAction(gameBoard, row, col, num), true)
-    case _ => (null, false)
+    case (a, b, c, d) => (null, false)
   }
 }
 
@@ -33,39 +37,42 @@ def checkEmpty(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(
 
 def checkRow(gameBoard: Array[Array[String]], row: Int, num: Int) = {
   !gameBoard(row)
-  .map(_(0).toString())
-  .contains(num.toString)
+    .map(_(0).toString())
+    .contains(num.toString)
 }
 
 def checkCol(gameBoard: Array[Array[String]], col: Int, num: Int) = {
   !gameBoard
-  .map(_(col))
-  .map(_(0).toString())
-  .contains(num.toString)
+    .map(_(col))
+    .map(_(0).toString())
+    .contains(num.toString)
 }
 
 def checkBox(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) = {
   val r = (row / 3) * 3
   val c = (col / 3) * 3
   !gameBoard
-  .slice(r, r + 3)
-  .flatMap(_.slice(c, c + 3))
-  .map(_(0).toString)
-  .contains(num.toString)
+    .slice(r, r + 3)
+    .flatMap(_.slice(c, c + 3))
+    .map(_(0).toString)
+    .contains(num.toString)
 }
 
 def checkDelete(gameBoard: Array[Array[String]], row: Int, col: Int) = {
-  checkFull(gameBoard, row, col) match {
-    case true => (applyAction(gameBoard, row, col, 0), true)
+  (
+    checkFull(gameBoard, row, col),
+    checkInitial(gameBoard, row, col)
+  ) match {
+    case (true, false) => (applyAction(gameBoard, row, col, 0), true)
     case _ => (null, false)
   }
 }
 
 def checkFull(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(row)(col)(0) != '0'
 
-def applyAction(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) = {
-  () => gameBoard.updated(row, gameBoard(row).updated(col, s"${num}e"))
-}
+def checkInitial(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(row)(col).contains("i")
+
+def applyAction(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) = () => gameBoard.updated(row, gameBoard(row).updated(col, s"$num "))
 
 def sudoku_drawer(gameBoard: Array[Array[String]]): Unit = {
   val redColor = "\u001b[31m"
@@ -81,38 +88,91 @@ def sudoku_drawer(gameBoard: Array[Array[String]]): Unit = {
   // helper function to draw a single row
   def drawRow(row: Array[String], rowIndex: Int) = {
     val rowString = row
-    .map(cell => cell.replace("0", " ").updated(1, ' '))
-    .grouped(3)
-    .map(_.mkString(s"$verticalLine "))
-    .mkString(s"$boldVerticalLine ", s"$boldVerticalLine ", s"$boldVerticalLine")
+      .map(cell => cell.replace("0", " ").updated(1, ' '))
+      .grouped(3)
+      .map(_.mkString(s"$verticalLine "))
+      .mkString(s"$boldVerticalLine ", s"$boldVerticalLine ", s"$boldVerticalLine")
 
     val horizontalSeparator = if((rowIndex + 1) % 3 == 0) boldMiddleHorizontalLine else horizontalLine
 
     (rowIndex + 1)
-    .toString
-    .concat(s" $rowString\n")
-    .concat(if(rowIndex < 8) horizontalSeparator else "")
+      .toString
+      .concat(s" $rowString\n")
+      .concat(if(rowIndex < 8) horizontalSeparator else "")
   }
 
   // draw the board
   val boardString = gameBoard
-  .zipWithIndex
-  .map((row, rowIndex) => drawRow(row, rowIndex))
-  .mkString(s"$topLetters\n$boldTopHorizontalLine\n", "\n", boldBottomHorizontalLine)
+    .zipWithIndex
+    .map((row, rowIndex) => drawRow(row, rowIndex))
+    .mkString(s"$topLetters\n$boldTopHorizontalLine\n", "\n", boldBottomHorizontalLine)
 
   println(boardString)
 }
 
-def sudoku_initializer() = {
-  Array(
-    Array("5i", "3i", "0i", "0i", "7i", "0i", "0i", "0i", "0i"),
-    Array("6i", "0i", "0i", "1i", "9i", "5i", "0i", "0i", "0i"),
-    Array("0i", "9i", "8i", "0i", "0i", "0i", "0i", "6i", "0i"),
-    Array("8i", "0i", "0i", "0i", "6i", "0i", "0i", "0i", "3i"),
-    Array("4i", "0i", "0i", "8i", "0i", "3i", "0i", "0i", "1i"),
-    Array("7i", "0i", "0i", "0i", "2i", "0i", "0i", "0i", "6i"),
-    Array("0i", "6i", "0i", "0i", "0i", "0i", "2i", "8i", "0i"),
-    Array("0i", "0i", "0i", "4i", "1i", "9i", "0i", "0i", "5i"),
-    Array("0i", "0i", "0i", "0i", "8i", "0i", "0i", "7i", "9i")
-  )
+def sudoku_initializer(): Array[Array[String]] = {
+  val random = new Random()
+
+  val grid = Array.fill(9, 9)("0")
+  val exist = Array.fill(3, 9, 10)(false)
+
+  def fillDiagonalBox(row: Int, col: Int): Unit = {
+    val numbers = random.shuffle(1 to 9)
+    val cells = (row to row + 2).flatMap(i => (col to col + 2).filter(j => grid(i)(j) == "0").map(j =>(i, j))).toList
+
+    cells.zip(numbers).foreach {
+      case ((i, j), num) =>
+        grid(i)(j) = s"$num"
+        exist(0)(i)(num) = true
+        exist(1)(j)(num) = true
+        exist(2)(i / 3 * 3 + j / 3)(num) = true
+    }
+  }
+
+  def fillRecursion(cell: Int): Boolean = {
+    if (cell == 81) return true
+    if ((cell / 9 / 3 * 3 + cell % 9 / 3) % 4 == 0) return fillRecursion(cell + 1)
+
+    val numbers = random.shuffle(1 to 9)
+    val solved = numbers.exists { i =>
+      if (!exist(0)(cell / 9)(i) && !exist(1)(cell % 9)(i) && !exist(2)(cell / 9 / 3 * 3 + cell % 9 / 3)(i)) {
+        exist(0)(cell / 9)(i) = true
+        exist(1)(cell % 9)(i) = true
+        exist(2)(cell / 9 / 3 * 3 + cell % 9 / 3)(i) = true
+
+        val isSolved = fillRecursion(cell + 1)
+        if (isSolved) {
+          grid(cell / 9)(cell % 9) = i.toString
+          true
+        } else {
+          exist(0)(cell / 9)(i) = false
+          exist(1)(cell % 9)(i) = false
+          exist(2)(cell / 9 / 3 * 3 + cell % 9 / 3)(i) = false
+          false
+        }
+      } else {
+        false
+      }
+    }
+
+    solved
+  }
+
+  def deleteRandomCells(emptyCells: Int): Unit = {
+    val cells = (for {
+      _ <- 1 to emptyCells
+      row = random.nextInt(9)
+      col = random.nextInt(9)
+      if grid(row)(col) != "0"
+    } yield (row, col)).toList
+
+    cells.foreach {
+      case (row, col) => grid(row)(col) = "0"
+    }
+  }
+
+  (0 to 8 by 3).foreach(i => fillDiagonalBox(i, i))
+  fillRecursion(0)
+  deleteRandomCells(70)
+  grid.map(_.map(cell => cell.concat("i")))
 }

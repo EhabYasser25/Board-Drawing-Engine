@@ -6,8 +6,9 @@ def AbstractGameEngine(
                         initializer: () => Array[Array[String]],
                         twoPlayersGame: Boolean
                       ): Unit = {
-  drawer(initializer())
-  play(initializer(), controller, drawer, twoPlayersGame, true)
+  val board = initializer()
+  drawer(board)
+  play(board, controller, drawer, twoPlayersGame, true)
 }
 
 @tailrec
@@ -19,7 +20,7 @@ def play(
           player1Turn: Boolean
         ): Unit = {
   println((if(twoPlayersGame) s"Player ${if (player1Turn) 1 else 2} - Turn\n" else "").concat("Enter Game Input: "))
-  val input = scala.io.StdIn.readLine();
+  val input = scala.io.StdIn.readLine()
   if(input == "-1")
     return;
   controller(board, input, player1Turn) match {
