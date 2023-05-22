@@ -74,26 +74,21 @@ def checkFull(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(r
 def checkInitial(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(row)(col).contains("i")
 
 def checkSolve(gameBoard: Array[Array[String]]): (() => Array[Array[String]], Boolean) = {
-  checkInitialBoard(gameBoard) match {
-    case board if board != null =>
-      val goal = board.map(_.mkString("[", ", ", "]")).mkString("[", ",", "]").replaceAll("0", "_")
-      val SudokuQ = new Query("consult('src/main/scala/solvers/sudoku.pl')")
-      SudokuQ.hasSolution
-      val Solver = new Query(s"Rows = $goal, sudoku(Rows), maplist(label, Rows), maplist(portray_clause, Rows)")
-      if(!Solver.hasSolution) return (null, false)
-      val Soln = Solver.oneSolution().get("Rows")
-      val tmpBoard = Soln.toString.stripPrefix("[[").stripSuffix("]]").split("], \\[").map(_.split(", "))
-      val newBoard = tmpBoard.zipWithIndex.map { case (elem, index) =>
-        elem.zipWithIndex.map { case (elm, indx) =>
-          elm.concat(if(gameBoard(index)(indx)(0).equals('0')) "0" else gameBoard(index)(indx)(1).toString)
-        }
-      }
-      (applyAction(newBoard, 0, 0, newBoard(0)(0)), true)
-    case _ => (null, false)
+  val board = gameBoard.map(_.map(_.replace("i", "")))
+  val goal = board.map(_.mkString("[", ", ", "]")).mkString("[", ",", "]").replaceAll("0", "_")
+  val SudokuQ = new Query("consult('src/main/scala/solvers/sudoku.pl')")
+  SudokuQ.hasSolution
+  val Solver = new Query(s"Rows = $goal, sudoku(Rows), maplist(label, Rows), maplist(portray_clause, Rows)")
+  if(!Solver.hasSolution) {println("Current state is insolvable!!"); return (null, false)}
+  val Soln = Solver.oneSolution().get("Rows")
+  val tmpBoard = Soln.toString.stripPrefix("[[").stripSuffix("]]").split("], \\[").map(_.split(", "))
+  val newBoard = tmpBoard.zipWithIndex.map { case (elem, index) =>
+    elem.zipWithIndex.map { case (elm, indx) =>
+      elm.concat(if(gameBoard(index)(indx)(0).equals('0')) "0" else gameBoard(index)(indx)(1).toString)
+    }
   }
+  (applyAction(newBoard, 0, 0, newBoard(0)(0)), true)
 }
-
-def checkInitialBoard(gameBoard: Array[Array[String]]) = if (gameBoard.forall(_.forall(_.contains("i")))) gameBoard.map(_.map(_.replace("i", ""))) else null
 
 def applyAction(gameBoard: Array[Array[String]], row: Int, col: Int, cell: String) = () => gameBoard.updated(row, gameBoard(row).updated(col, cell))
 
