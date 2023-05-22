@@ -81,7 +81,7 @@ def checkSolve(gameBoard: Array[Array[String]]): (() => Array[Array[String]], Bo
     .replaceAll("0", "_")
   val SudokuQ = new Query("consult('src/main/scala/solvers/sudoku.pl')")
   SudokuQ.hasSolution
-  val Solver = new Query(s"Rows = $goal, sudoku(Rows), maplist(label, Rows), maplist(portray_clause, Rows)")
+  val Solver = Query(s"Rows = $goal, sudoku(Rows), maplist(label, Rows)")
   if(!Solver.hasSolution) {println("No solution found."); return (null, false)}
   val newBoard =
     Solver

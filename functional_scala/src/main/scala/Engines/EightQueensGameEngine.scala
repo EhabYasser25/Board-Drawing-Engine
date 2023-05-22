@@ -8,8 +8,7 @@ def eightQueens_controller(game_board: Array[Array[String]], input: String, play
 
   if(input == "solve") {
     val queensList = solve(game_board)
-    println(queensList.mkString(", ")) // Print the positions of the queens
-    return autoSolveAction(game_board, queensList)
+    autoSolveAction(game_board, queensList)
   }
 
   boundCheck(input) match {
@@ -54,6 +53,7 @@ def solve(game_board: Array[Array[String]]): Array[String] = {
     empty
   }
 }
+
 def autoSolveAction(game_board: Array[Array[String]], solution: Array[String]): (Array[Array[String]], Boolean) = {
   if (solution(0) != null) {
     val updated_board = solution.zipWithIndex.foldLeft(game_board) { case (board, (row, col)) =>
