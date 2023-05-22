@@ -6,23 +6,19 @@ import java.io.PrintWriter
 
 def eightQueens_controller(game_board: Array[Array[String]], input: String, player1Turn: Boolean): (Array[Array[String]], Boolean) = {
 
-  if(input == "solve" && isFirstMove(game_board)) {
-    val queensList = solve()
+  if(input == "solve") {
+    val queensList = solve(game_board)
     println(queensList.mkString(", ")) // Print the positions of the queens
     return autoSolveAction(game_board, queensList)
-  } else if(input == "solve" && !isFirstMove(game_board)) {
-    val queenList = completeTheSolution(game_board)
-    println(queenList.mkString(", ")) // Print the positions of the queens
-    return autoSolveAction(game_board, queenList)
   }
 
   boundCheck(input) match {
     case (row, col, true) => if isValidMove(row, col,
-                                            isQueenPresentInRowOrColumn,
-                                            isQueenPresentInDiagonals,
-                                            game_board)
-                              then (modifyBoard(game_board, row, col), true)
-                              else (game_board, false)
+      isQueenPresentInRowOrColumn,
+      isQueenPresentInDiagonals,
+      game_board)
+    then (modifyBoard(game_board, row, col), true)
+    else (game_board, false)
     case(_, _, false) =>  (game_board, false)
   }
 
@@ -37,55 +33,27 @@ def boundCheck(input: String) = {
   }
 }
 
-def solve(): Array[String] = {
+def solve(game_board: Array[Array[String]]): Array[String] = {
   val queries = "src/main/scala/solvers/EightQueens.pl"
 
-  val connect = new Query(s"consult('$queries')") // The queries
+  val connect = new Query("consult('src/main/scala/solvers/EightQueens.pl')") // The queries
 
-  val sol = connect.hasSolution // for debugging
+  connect.hasSolution
 
-  val query = new Query("n_queens(8, Qs), labeling([ff], Qs), write(Qs)") // Prolog query to solve the 8 Queens problem
+  val Qs = game_board.transpose.drop(1).map(col => if(col.contains("♕")) col.indexOf("♕") else "_").mkString("[", ", ", "]")
+
+  val query = Query(s"Qs = $Qs, n_queens(8, Qs), labeling([], Qs)") // Prolog query to solve the 8 Queens problem
   if (query.hasSolution) {
     val solution = query.oneSolution() // Get the first solution
-    val queens = solution.get("Qs").asInstanceOf[Term] // Extract the solution for the Qs variable
+    val queens = solution.get("Qs") // Extract the solution for the Qs variable
     val queensList = queens.toTermArray.map(_.toString) // Convert the Prolog terms to strings
-    return queensList
+    queensList
   } else {
     println("No solution found.")
     val empty: Array[String] = Array.ofDim(8)
-    return empty
+    empty
   }
 }
-
-def completeTheSolution(game_board: Array[Array[String]]): Array[String] = {
-  val queries = "src/main/scala/solvers/EightQueensComp.pl"
-
-  val connect = new Query(s"consult('$queries')") // The queries
-
-  val sol = connect.hasSolution // for debugging
-
-  // Traverse the game_board and find the positions of the queens
-  val queensPositions = for {
-    (row, rowIndex) <- game_board.zipWithIndex
-    (value, colIndex) <- row.zipWithIndex
-    if value == "♕" // Assuming "♕" represents a queen
-  } yield s"${rowIndex}/${colIndex}"
-
-  val queensTerm = new Atom(queensPositions.mkString("[", ",", "]"))
-  val query = new Query(s"n_queens(8, $queensTerm, Qs)")
-
-  if (query.hasSolution) {
-    val solution = query.oneSolution() // Get the first solution
-    val queens = solution.get("Qs").asInstanceOf[Term] // Extract the solution for the Qs variable
-    val queensList = queens.toTermArray.map(_.toString) // Convert the Prolog terms to strings
-    return queensList
-  } else {
-    println("No solution found.")
-    val empty: Array[String] = Array.ofDim(8)
-    return empty
-  }
-}
-
 def autoSolveAction(game_board: Array[Array[String]], solution: Array[String]): (Array[Array[String]], Boolean) = {
   if (solution(0) != null) {
     val updated_board = solution.zipWithIndex.foldLeft(game_board) { case (board, (row, col)) =>
@@ -148,16 +116,16 @@ def eightQueens_drawer(game_board: Array[Array[String]]): Unit = {
   val white = "\u001B[30m"
   val reset = "\u001B[0m"
   game_board
-  .foreach( row =>
-    val displayRow = row.zipWithIndex.foldLeft(white) { case (acc, (cell, j)) =>
-      if (cell == "♕") {
-        acc + (if (j == 1) " " else "") + cell + "  "
-      } else {
-        acc + cell
-      }
-    } + reset
-    println(displayRow)
-  )
+    .foreach( row =>
+      val displayRow = row.zipWithIndex.foldLeft(white) { case (acc, (cell, j)) =>
+        if (cell == "♕") {
+          acc + (if (j == 1) " " else "") + cell + "  "
+        } else {
+          acc + cell
+        }
+      } + reset
+      println(displayRow)
+    )
 
   if (isFirstMove(game_board))
     println("To solve enter 'solve'")
