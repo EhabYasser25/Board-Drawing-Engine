@@ -74,13 +74,13 @@ def checkFull(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(r
 def checkInitial(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(row)(col).contains("i")
 
 def checkSolve(gameBoard: Array[Array[String]]): (() => Array[Array[String]], Boolean) = {
+  val SudokuQ = new Query("consult('solvers/sudoku.pl')")
+  SudokuQ.hasSolution
   val goal = gameBoard
     .map(_.map(_.replace("i", "")))
     .map(_.mkString("[", ", ", "]"))
     .mkString("[", ",", "]")
     .replaceAll("0", "_")
-  val SudokuQ = new Query("consult('src/main/scala/solvers/sudoku.pl')")
-  SudokuQ.hasSolution
   val Solver = Query(s"Rows = $goal, sudoku(Rows), maplist(label, Rows)")
   if(!Solver.hasSolution) {println("No solution found."); return (null, false)}
   val newBoard =
