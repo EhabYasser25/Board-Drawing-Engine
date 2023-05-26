@@ -30,6 +30,7 @@
 
 * This Project was developed as a part of the academic course ***CSE 225: Programming Languages Paradigms*** that is being studied on the 6th semester (spring 2023) in the department of *Computer and Systems Engieering*, Alexandria University.
 we were assigned to implement an extendable game board drawing engine, to explore the main differences between the Fucntional and the Object Oriented paradigms.
+In addition to design prolog programs to solve the Sudoku and N-Queens games automatically, either during the game or starting from the initial board.
 ---
 
 ## Project Objectives
@@ -43,6 +44,9 @@ we were assigned to implement an extendable game board drawing engine, to explor
         * Inheritance
         * Overriding
         * Encapsulation
+     * Logical Paradigm:
+	     * Predicates 
+	     * Recursive backtracking
 ---
 
 ## Installation
