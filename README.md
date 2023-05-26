@@ -3,7 +3,7 @@
 
 `Object Oriented Paradigm`
 `Functional Paradigm`
-
+`Logical Paradigm`
 ---
 
 * We were required to implement an abstract game engine that supports the drawing of **six games**, and could be extended for further more games:
