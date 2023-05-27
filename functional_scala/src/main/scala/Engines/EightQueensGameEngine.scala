@@ -1,6 +1,6 @@
 package Engines
 
-import org.jpl7.{Atom, Query, Term, Variable}
+import org.jpl7._
 
 import java.io.PrintWriter
 
@@ -8,7 +8,6 @@ def eightQueens_controller(game_board: Array[Array[String]], input: String, play
 
   if(input == "solve") {
     val queensList = solve(game_board)
-    println(queensList.mkString(", ")) // Print the positions of the queens
     return autoSolveAction(game_board, queensList)
   }
 
@@ -36,7 +35,7 @@ def boundCheck(input: String) = {
 def solve(game_board: Array[Array[String]]): Array[String] = {
   val queries = "src/main/scala/solvers/EightQueens.pl"
 
-  val connect = new Query("consult('src/main/scala/solvers/EightQueens.pl')") // The queries
+  val connect = new Query("consult('solvers/EightQueens.pl')") // The queries
 
   connect.hasSolution
 
@@ -52,6 +51,7 @@ def solve(game_board: Array[Array[String]]): Array[String] = {
     empty
   }
 }
+
 def autoSolveAction(game_board: Array[Array[String]], solution: Array[String]): (Array[Array[String]], Boolean) = {
   if (solution(0) != null) {
     val updated_board = solution.zipWithIndex.foldLeft(game_board) { case (board, (row, col)) =>
@@ -111,17 +111,15 @@ def modifyBoard(game_board: Array[Array[String]], row: Int, col: Int): Array[Arr
 }
 
 def eightQueens_drawer(game_board: Array[Array[String]]): Unit = {
-  val white = "\u001B[30m"
-  val reset = "\u001B[0m"
   game_board
     .foreach( row =>
-      val displayRow = row.zipWithIndex.foldLeft(white) { case (acc, (cell, j)) =>
+      val displayRow = row.zipWithIndex.foldLeft("") { case (acc, (cell, j)) =>
         if (cell == "♕") {
           acc + (if (j == 1) " " else "") + cell + "  "
         } else {
           acc + cell
         }
-      } + reset
+      }
       println(displayRow)
     )
 
@@ -130,15 +128,13 @@ def eightQueens_drawer(game_board: Array[Array[String]]): Unit = {
 
 def eightQueens_initializer(): Array[Array[String]] = {
   val board: Array[Array[String]] = Array.ofDim[String](9, 9)
-  val white = "\u001B[37m" // White color
-  val reset = "\u001B[0m"
 
   val initialBoard = board.zipWithIndex.map { case (rowArr, rowIndex) =>
     rowArr.zipWithIndex.map { case (_, colIndex) =>
       if (rowIndex == 0) {
-        if (colIndex == 0) "  " else s" $white${('a' + colIndex - 1).toChar}$reset "
+        if (colIndex == 0) "  " else s" ${('a' + colIndex - 1).toChar} "
       } else if (colIndex == 0 && rowIndex > 0) {
-        s"$white$rowIndex$reset"
+        s"$rowIndex"
       } else if ((rowIndex % 2 == 0 && colIndex % 2 == 0) || (rowIndex % 2 == 1 && colIndex % 2 == 1)) {
         if (colIndex == 1) " 🟧 " else "🟧 "
       } else {

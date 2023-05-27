@@ -30,7 +30,7 @@ def checkNormal(gameBoard: Array[Array[String]], row: Int, col: Int, num: Int) =
     checkBox(gameBoard, row, col, num)
   ) match {
     case (true, true, true, true) => (applyAction(gameBoard, row, col, s"$num "), true)
-    case (a, b, c, d) => (null, false)
+    case _ => (null, false)
   }
 }
 
@@ -74,19 +74,26 @@ def checkFull(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(r
 def checkInitial(gameBoard: Array[Array[String]], row: Int, col: Int) = gameBoard(row)(col).contains("i")
 
 def checkSolve(gameBoard: Array[Array[String]]): (() => Array[Array[String]], Boolean) = {
-  val board = gameBoard.map(_.map(_.replace("i", "")))
-  val goal = board.map(_.mkString("[", ", ", "]")).mkString("[", ",", "]").replaceAll("0", "_")
-  val SudokuQ = new Query("consult('src/main/scala/solvers/sudoku.pl')")
+  val SudokuQ = new Query("consult('solvers/sudoku.pl')")
   SudokuQ.hasSolution
-  val Solver = new Query(s"Rows = $goal, sudoku(Rows), maplist(label, Rows), maplist(portray_clause, Rows)")
-  if(!Solver.hasSolution) {println("Current state is insolvable!!"); return (null, false)}
-  val Soln = Solver.oneSolution().get("Rows")
-  val tmpBoard = Soln.toString.stripPrefix("[[").stripSuffix("]]").split("], \\[").map(_.split(", "))
-  val newBoard = tmpBoard.zipWithIndex.map { case (elem, index) =>
-    elem.zipWithIndex.map { case (elm, indx) =>
-      elm.concat(if(gameBoard(index)(indx)(0).equals('0')) "0" else gameBoard(index)(indx)(1).toString)
+  val goal = gameBoard
+    .map(_.map(_.replace("i", "")))
+    .map(_.mkString("[", ", ", "]"))
+    .mkString("[", ",", "]")
+    .replaceAll("0", "_")
+  val Solver = Query(s"Rows = $goal, sudoku(Rows), maplist(label, Rows)")
+  if(!Solver.hasSolution) {println("No solution found."); return (null, false)}
+  val newBoard =
+    Solver
+    .oneSolution()
+    .get("Rows")
+    .toString.stripPrefix("[[").stripSuffix("]]").split("], \\[").map(_.split(", "))
+    .zipWithIndex.map {
+    case (row, i) =>
+      row.zipWithIndex.map { case (cell, j) =>
+        cell.concat(if(gameBoard(i)(j)(0).equals('0')) "0" else gameBoard(i)(j)(1).toString)
+      }
     }
-  }
   (applyAction(newBoard, 0, 0, newBoard(0)(0)), true)
 }
 
