@@ -82,7 +82,7 @@ def checkSolve(gameBoard: Array[Array[String]]): (() => Array[Array[String]], Bo
     .mkString("[", ",", "]")
     .replaceAll("0", "_")
   val Solver = Query(s"Rows = $goal, sudoku(Rows), maplist(label, Rows)")
-  if(!Solver.hasSolution) {println("No solution found."); return (null, false)}
+  if(!Solver.hasSolution) {println("No solution found."); return (applyAction(gameBoard, 0, 0, gameBoard(0)(0)), true)}
   val newBoard =
     Solver
     .oneSolution()
@@ -91,7 +91,7 @@ def checkSolve(gameBoard: Array[Array[String]]): (() => Array[Array[String]], Bo
     .zipWithIndex.map {
     case (row, i) =>
       row.zipWithIndex.map { case (cell, j) =>
-        cell.concat(if(gameBoard(i)(j)(0).equals('0')) "0" else gameBoard(i)(j)(1).toString)
+        cell.concat(if(gameBoard(i)(j)(0).equals('0')) "i" else gameBoard(i)(j)(1).toString)
       }
     }
   (applyAction(newBoard, 0, 0, newBoard(0)(0)), true)
@@ -100,14 +100,12 @@ def checkSolve(gameBoard: Array[Array[String]]): (() => Array[Array[String]], Bo
 def applyAction(gameBoard: Array[Array[String]], row: Int, col: Int, cell: String) = () => gameBoard.updated(row, gameBoard(row).updated(col, cell))
 
 def sudoku_drawer(gameBoard: Array[Array[String]]): Unit = {
-  val redColor = "\u001b[31m"
-  val resetColor = "\u001b[0m"
   val topLetters = "    a   b   c   d   e   f   g   h   i"
-  val boldTopHorizontalLine = s"  $redColor┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓$resetColor"
-  val boldMiddleHorizontalLine = s"  $redColor┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫$resetColor"
-  val boldBottomHorizontalLine = s"  $redColor┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛$resetColor"
-  val horizontalLine = s"  $redColor┃$resetColor───┼───┼───$redColor┃$resetColor───┼───┼───$redColor┃$resetColor───┼───┼───$redColor┃$resetColor"
-  val boldVerticalLine = s"$redColor┃$resetColor"
+  val boldTopHorizontalLine = s"  ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓"
+  val boldMiddleHorizontalLine = s"  ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫"
+  val boldBottomHorizontalLine = s"  ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛"
+  val horizontalLine = s"  ┃───┼───┼───┃───┼───┼───┃───┼───┼───┃"
+  val boldVerticalLine = s"┃"
   val verticalLine = "|"
 
   // helper function to draw a single row

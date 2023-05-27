@@ -66,7 +66,7 @@ def autoSolveAction(game_board: Array[Array[String]], solution: Array[String]): 
     }
     (updated_board, true)
   } else {
-    (game_board, false)
+    (game_board, true)
   }
 }
 
