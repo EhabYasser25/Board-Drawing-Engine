@@ -48,6 +48,7 @@ def solve(game_board: Array[Array[String]]): Array[String] = {
     queensList
   } else {
     val empty: Array[String] = Array.ofDim(8)
+    print("No Solution Found!! ")
     empty
   }
 }
@@ -64,13 +65,8 @@ def autoSolveAction(game_board: Array[Array[String]], solution: Array[String]): 
     }
     (updated_board, true)
   } else {
-    (game_board, true)
+    (null, false)
   }
-}
-
-
-def isFirstMove(gameBoard: Array[Array[String]]): Boolean = {
-  !gameBoard.exists(row => row.exists(_.contains("♕")))
 }
 
 def isValidMove(row: Int, col: Int,

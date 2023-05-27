@@ -82,7 +82,7 @@ def checkSolve(gameBoard: Array[Array[String]]): (() => Array[Array[String]], Bo
     .mkString("[", ",", "]")
     .replaceAll("0", "_")
   val Solver = Query(s"Rows = $goal, sudoku(Rows), maplist(label, Rows)")
-  if(!Solver.hasSolution) {println("No solution found."); return (applyAction(gameBoard, 0, 0, gameBoard(0)(0)), true)}
+  if(!Solver.hasSolution) {print("No Solution Found!! "); return (null, false)}
   val newBoard =
     Solver
     .oneSolution()
@@ -91,7 +91,7 @@ def checkSolve(gameBoard: Array[Array[String]]): (() => Array[Array[String]], Bo
     .zipWithIndex.map {
     case (row, i) =>
       row.zipWithIndex.map { case (cell, j) =>
-        cell.concat(if(gameBoard(i)(j)(0).equals('0')) "i" else gameBoard(i)(j)(1).toString)
+        cell.concat(if(gameBoard(i)(j).contains("0")) " " else gameBoard(i)(j)(1).toString)
       }
     }
   (applyAction(newBoard, 0, 0, newBoard(0)(0)), true)
@@ -103,17 +103,23 @@ def sudoku_drawer(gameBoard: Array[Array[String]]): Unit = {
   val redColor = "\u001b[31m"
   val resetColor = "\u001b[0m"
   val topLetters = "    a   b   c   d   e   f   g   h   i"
-  val boldTopHorizontalLine = s"  $redColor┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓$resetColor"
-  val boldMiddleHorizontalLine = s"  $redColor┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫$resetColor"
-  val boldBottomHorizontalLine = s"  $redColor┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛$resetColor"
-  val horizontalLine = s"  $redColor┃$resetColor───┼───┼───$redColor┃$resetColor───┼───┼───$redColor┃$resetColor───┼───┼───$redColor┃$resetColor"
-  val boldVerticalLine = s"$redColor┃$resetColor"
+  val boldTopHorizontalLine = "  ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓"
+  val boldMiddleHorizontalLine = "  ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫"
+  val boldBottomHorizontalLine = "  ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛"
+  val horizontalLine = "  ┃───┼───┼───┃───┼───┼───┃───┼───┼───┃"
+  val boldVerticalLine = "┃"
   val verticalLine = "|"
 
   // helper function to draw a single row
   def drawRow(row: Array[String], rowIndex: Int) = {
     val rowString = row
-      .map(cell => cell.replace("0", " ").updated(1, ' '))
+      .map(cell => {
+        val modifiedCell = cell.replace("0", " ").updated(1, ' ')
+        if (cell.contains("i"))
+          redColor + modifiedCell + resetColor
+        else
+          modifiedCell
+      })
       .grouped(3)
       .map(_.mkString(s"$verticalLine "))
       .mkString(s"$boldVerticalLine ", s"$boldVerticalLine ", s"$boldVerticalLine")
@@ -133,6 +139,7 @@ def sudoku_drawer(gameBoard: Array[Array[String]]): Unit = {
     .mkString(s"$topLetters\n$boldTopHorizontalLine\n", "\n", boldBottomHorizontalLine)
 
   println(boardString)
+  println("To solve enter 'solve'")
 }
 
 def sudoku_initializer(): Array[Array[String]] = {
