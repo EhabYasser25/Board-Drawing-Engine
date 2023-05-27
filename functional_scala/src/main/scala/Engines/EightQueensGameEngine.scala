@@ -44,12 +44,10 @@ def solve(game_board: Array[Array[String]]): Array[String] = {
 
   val query = Query(s"Qs = $Qs, n_queens(8, Qs), labeling([], Qs)") // Prolog query to solve the 8 Queens problem
   if (query.hasSolution) {
-    val solution = query.oneSolution() // Get the first solution
-    val queens = solution.get("Qs") // Extract the solution for the Qs variable
+    val queens = query.oneSolution().get("Qs") // Extract the solution for the Qs variable
     val queensList = queens.toTermArray.map(_.toString) // Convert the Prolog terms to strings
     queensList
   } else {
-    println("No solution found.")
     val empty: Array[String] = Array.ofDim(8)
     empty
   }
@@ -66,7 +64,7 @@ def autoSolveAction(game_board: Array[Array[String]], solution: Array[String]): 
     }
     (updated_board, true)
   } else {
-    (game_board, false)
+    (game_board, true)
   }
 }
 
@@ -127,8 +125,7 @@ def eightQueens_drawer(game_board: Array[Array[String]]): Unit = {
       println(displayRow)
     )
 
-  if (isFirstMove(game_board))
-    println("To solve enter 'solve'")
+  println("To solve enter 'solve'")
 }
 
 def eightQueens_initializer(): Array[Array[String]] = {
