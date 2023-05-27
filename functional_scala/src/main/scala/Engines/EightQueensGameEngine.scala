@@ -113,17 +113,15 @@ def modifyBoard(game_board: Array[Array[String]], row: Int, col: Int): Array[Arr
 }
 
 def eightQueens_drawer(game_board: Array[Array[String]]): Unit = {
-  val white = "\u001B[30m"
-  val reset = "\u001B[0m"
   game_board
     .foreach( row =>
-      val displayRow = row.zipWithIndex.foldLeft(white) { case (acc, (cell, j)) =>
+      val displayRow = row.zipWithIndex.foldLeft("") { case (acc, (cell, j)) =>
         if (cell == "♕") {
           acc + (if (j == 1) " " else "") + cell + "  "
         } else {
           acc + cell
         }
-      } + reset
+      }
       println(displayRow)
     )
 
@@ -133,15 +131,13 @@ def eightQueens_drawer(game_board: Array[Array[String]]): Unit = {
 
 def eightQueens_initializer(): Array[Array[String]] = {
   val board: Array[Array[String]] = Array.ofDim[String](9, 9)
-  val white = "\u001B[37m" // White color
-  val reset = "\u001B[0m"
 
   val initialBoard = board.zipWithIndex.map { case (rowArr, rowIndex) =>
     rowArr.zipWithIndex.map { case (_, colIndex) =>
       if (rowIndex == 0) {
-        if (colIndex == 0) "  " else s" $white${('a' + colIndex - 1).toChar}$reset "
+        if (colIndex == 0) "  " else s" ${('a' + colIndex - 1).toChar} "
       } else if (colIndex == 0 && rowIndex > 0) {
-        s"$white$rowIndex$reset"
+        s"$rowIndex"
       } else if ((rowIndex % 2 == 0 && colIndex % 2 == 0) || (rowIndex % 2 == 1 && colIndex % 2 == 1)) {
         if (colIndex == 1) " 🟧 " else "🟧 "
       } else {
