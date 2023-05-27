@@ -41,7 +41,7 @@ def solve(game_board: Array[Array[String]]): Array[String] = {
 
   val Qs = game_board.transpose.drop(1).map(col => if(col.contains("♕")) col.indexOf("♕") else "_").mkString("[", ", ", "]")
 
-  val query = Query(s"Qs = $Qs, n_queens(8, Qs), labeling([], Qs)") // Prolog query to solve the 8 Queens problem
+  val query = Query(s"Qs = $Qs, n_queens(8, Qs), labeling([ff], Qs)") // Prolog query to solve the 8 Queens problem
   if (query.hasSolution) {
     val queens = query.oneSolution().get("Qs") // Extract the solution for the Qs variable
     val queensList = queens.toTermArray.map(_.toString) // Convert the Prolog terms to strings
