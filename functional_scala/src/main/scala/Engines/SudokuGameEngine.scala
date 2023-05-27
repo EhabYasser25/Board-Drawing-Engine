@@ -100,12 +100,14 @@ def checkSolve(gameBoard: Array[Array[String]]): (() => Array[Array[String]], Bo
 def applyAction(gameBoard: Array[Array[String]], row: Int, col: Int, cell: String) = () => gameBoard.updated(row, gameBoard(row).updated(col, cell))
 
 def sudoku_drawer(gameBoard: Array[Array[String]]): Unit = {
+  val redColor = "\u001b[31m"
+  val resetColor = "\u001b[0m"
   val topLetters = "    a   b   c   d   e   f   g   h   i"
-  val boldTopHorizontalLine = s"  ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓"
-  val boldMiddleHorizontalLine = s"  ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫"
-  val boldBottomHorizontalLine = s"  ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛"
-  val horizontalLine = s"  ┃───┼───┼───┃───┼───┼───┃───┼───┼───┃"
-  val boldVerticalLine = s"┃"
+  val boldTopHorizontalLine = s"  $redColor┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓$resetColor"
+  val boldMiddleHorizontalLine = s"  $redColor┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫$resetColor"
+  val boldBottomHorizontalLine = s"  $redColor┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛$resetColor"
+  val horizontalLine = s"  $redColor┃$resetColor───┼───┼───$redColor┃$resetColor───┼───┼───$redColor┃$resetColor───┼───┼───$redColor┃$resetColor"
+  val boldVerticalLine = s"$redColor┃$resetColor"
   val verticalLine = "|"
 
   // helper function to draw a single row
